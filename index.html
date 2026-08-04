@@ -65,6 +65,25 @@
                 <p>Den Schlüssel erhältst du im <strong>Partner-Portal von lixe.de</strong>.</p>
                 <label for="key">Partnerschlüssel</label>
                 <input id="key" type="text" placeholder="emb_…" autocomplete="off" spellcheck="false">
+
+                <label for="content">Was soll der Player zeigen?</label>
+                <select id="content">
+                    <option value="">Startseite (Standard)</option>
+                    <option value="video">Einzelnes Video (Video-ID)</option>
+                    <option value="playlist">Sammlung (Sammlung-ID)</option>
+                    <option value="live">Livestream</option>
+                    <option value="programm">Programm</option>
+                </select>
+
+                <div id="idWrap" style="display:none">
+                    <label for="cid">ID</label>
+                    <input id="cid" type="text" placeholder="z. B. 1213029648 (Video) oder 22 (Sammlung)" autocomplete="off" spellcheck="false">
+                </div>
+
+                <label style="display:flex;align-items:center;gap:8px;margin-top:14px;font-weight:400;cursor:pointer">
+                    <input id="nav" type="checkbox"> Mit unterer Navigation (3 Icons)
+                </label>
+
                 <div style="margin-top:14px">
                     <button class="primary" id="btnPreview">Vorschau aktualisieren</button>
                 </div>
@@ -115,22 +134,35 @@
     var APP = (CFG.appUrl || 'https://app.lixe.de').replace(/\/+$/, '');
     var DEMO_KEY = CFG.embedKey || '';
     var LS = 'lixe_kit_key';
-    var KIT_VERSION = '2026.08.04-04';
-    var STAND = '04.08.2026, 14:49 Uhr (MESZ)';
+    var KIT_VERSION = '2026.08.04-05';
 
     var $ = function (id) { return document.getElementById(id); };
 
     function aktKey() { try { return window.localStorage.getItem(LS) || DEMO_KEY; } catch (e) { return DEMO_KEY; } }
 
-    function snippet(key) {
-        return '<script src="' + APP + '/einbetten/loader.js"\n'
-             + '        data-key="' + (key || 'DEIN_PARTNERSCHLUESSEL') + '"><\/script>';
+    // Gewählte Optionen aus den Bedienelementen → data-content / data-nav.
+    function opts() {
+        var typ = $('content').value, id = ($('cid').value || '').trim(), content = '';
+        if (typ === 'video' && id) { content = 'video:' + id; }
+        else if (typ === 'playlist' && id) { content = 'playlist:' + id; }
+        else if (typ === 'live') { content = 'live'; }
+        else if (typ === 'programm') { content = 'programm'; }
+        return { content: content, nav: $('nav').checked };
     }
-    function baueVorschau(key) {
+    function snippet(key, o) {
+        var lines = ['<script src="' + APP + '/einbetten/loader.js"',
+                     '        data-key="' + (key || 'DEIN_PARTNERSCHLUESSEL') + '"'];
+        if (o.content) { lines.push('        data-content="' + o.content + '"'); }
+        if (o.nav) { lines.push('        data-nav="1"'); }
+        return lines.join('\n') + '><\/script>';
+    }
+    function baueVorschau(key, o) {
         var ziel = $('lixe-preview'); ziel.innerHTML = '';
         if (!key || key.indexOf('emb_') !== 0) { $('previewHint').textContent = 'Trage einen gültigen Schlüssel (emb_…) ein, um die Vorschau zu sehen.'; return; }
         var iframe = document.createElement('iframe');
-        iframe.src = APP + '/einbetten/app?k=' + encodeURIComponent(key);
+        iframe.src = APP + '/einbetten/app?k=' + encodeURIComponent(key)
+            + (o.content ? '&content=' + encodeURIComponent(o.content) : '')
+            + (o.nav ? '&nav=1' : '');
         iframe.setAttribute('allow', 'autoplay; fullscreen; picture-in-picture; encrypted-media');
         iframe.setAttribute('allowfullscreen', '');
         iframe.setAttribute('title', 'lixe Player');
@@ -139,13 +171,20 @@
         $('previewHint').textContent = 'So sieht der Player auf deiner Seite aus.';
     }
     function aktualisieren() {
-        var key = ($('key').value || '').trim();
+        var key = ($('key').value || '').trim(), o = opts();
         try { if (key) { window.localStorage.setItem(LS, key); } } catch (e) {}
-        $('snippet').textContent = snippet(key);
-        baueVorschau(key);
+        $('snippet').textContent = snippet(key, o);
+        baueVorschau(key, o);
     }
 
     $('btnPreview').addEventListener('click', aktualisieren);
+    $('content').addEventListener('change', function () {
+        var typ = $('content').value;
+        $('idWrap').style.display = (typ === 'video' || typ === 'playlist') ? '' : 'none';
+        aktualisieren();
+    });
+    $('cid').addEventListener('input', aktualisieren);
+    $('nav').addEventListener('change', aktualisieren);
     $('btnCopy').addEventListener('click', function () {
         var t = $('snippet').textContent;
         (navigator.clipboard ? navigator.clipboard.writeText(t) : Promise.reject()).then(
@@ -165,9 +204,14 @@
         })
         .catch(function () {});
 
-    // Kit-Kennung: Version + Stand.
+    // Kit-Kennung: Version + Stand. Stand = letzte Änderung dieser Seite (aus dem
+    // Server-Header), automatisch in deutscher Zeit – nicht mehr hartcodiert.
     $('vKit').textContent = KIT_VERSION;
-    $('vStand').textContent = STAND;
+    try {
+        var lm = new Date(document.lastModified);
+        $('vStand').textContent = isNaN(lm.getTime()) ? '–'
+            : lm.toLocaleString('de-DE', { timeZone: 'Europe/Berlin', day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }) + ' Uhr (MESZ)';
+    } catch (e) { $('vStand').textContent = '–'; }
 
     // Start
     $('key').value = aktKey();
