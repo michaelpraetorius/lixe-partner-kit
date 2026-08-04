@@ -3,29 +3,30 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>lixe Partner-Kit · Player einbetten</title>
-    <meta name="description" content="lixe auf deiner Website einbetten: Player mit Login und Code-Einlösung. Token eintragen, Vorschau sehen, Schnipsel kopieren.">
+    <title>lixe Integration</title>
+    <meta name="description" content="So bindest du die Plattform lixe.de auf deiner Website ein: Player einbetten oder nahtlos per SSO.">
     <style>
         :root{
             color-scheme: light dark;
             --bg:#ffffff; --fg:#111214; --mut:#6b7280; --line:rgba(0,0,0,.12);
-            --card:#f6f7f9; --akz:#e5645a; --code:#f0f1f3;
+            --card:#f6f7f9; --akz:#0A7CFF; --code:#f0f1f3;
         }
         @media (prefers-color-scheme: dark){
             :root{ --bg:#0d0e10; --fg:#f2f3f5; --mut:#9aa0a6; --line:rgba(255,255,255,.14);
-                   --card:#17191c; --akz:#e5645a; --code:#1c1f23; }
+                   --card:#17191c; --code:#1c1f23; }
         }
         *{box-sizing:border-box}
         body{margin:0;background:var(--bg);color:var(--fg);line-height:1.6;
             font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
         .wrap{max-width:1000px;margin:0 auto;padding:40px 20px 72px}
         header h1{font-size:28px;margin:0 0 6px}
-        header p.lead{color:var(--mut);font-size:16px;margin:0 0 8px}
+        header p.lead{color:var(--mut);font-size:16px;margin:0}
         .cols{display:grid;grid-template-columns:1fr;gap:28px;margin-top:32px}
-        @media (min-width:820px){ .cols{grid-template-columns:minmax(0,1fr) 420px} }
-        h2{font-size:18px;margin:0 0 12px}
-        .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px}
-        label{display:block;font-size:13px;font-weight:600;margin:14px 0 6px}
+        @media (min-width:820px){ .cols{grid-template-columns:minmax(0,1fr) 400px} }
+        h2{font-size:17px;margin:0 0 10px}
+        .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px;margin-bottom:20px}
+        .card p{margin:0 0 12px;font-size:14px}
+        label{display:block;font-size:13px;font-weight:600;margin:12px 0 6px}
         input,select{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:10px;
             background:var(--bg);color:var(--fg);font-size:14px}
         .row{display:flex;gap:10px;align-items:flex-end}
@@ -34,40 +35,37 @@
         .primary{background:var(--akz);color:#fff}
         .ghost{background:transparent;color:var(--fg);border:1px solid var(--line)}
         .hint{font-size:12.5px;color:var(--mut);margin-top:8px}
+        a{color:var(--akz)}
         pre{background:var(--code);border:1px solid var(--line);border-radius:10px;padding:12px;
             overflow:auto;font-size:12.5px;margin:10px 0 0}
         code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
         .badge{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;
-            background:rgba(229,100,90,.14);color:var(--akz);padding:3px 8px;border-radius:999px}
-        .preview-wrap{max-width:420px;margin:0 auto}
+            background:color-mix(in srgb, var(--akz) 16%, transparent);color:var(--akz);padding:3px 8px;border-radius:999px}
+        .preview-wrap{max-width:400px;margin:0 auto}
         .ratio{position:relative;width:100%;padding-bottom:177.78%}
         .ratio.q{padding-bottom:56.25%}
         .ratio iframe{position:absolute;inset:0;width:100%;height:100%;border:0;border-radius:12px;background:#000}
-        .warn{background:rgba(229,100,90,.10);border:1px solid rgba(229,100,90,.3);border-radius:10px;
-            padding:10px 12px;font-size:13px;margin-top:12px}
+        .warn{background:color-mix(in srgb, var(--akz) 8%, transparent);border:1px solid color-mix(in srgb, var(--akz) 28%, transparent);
+            border-radius:10px;padding:10px 12px;font-size:13px;margin-top:12px}
         footer{margin-top:56px;color:var(--mut);font-size:13px;text-align:center}
-        a{color:var(--akz)}
     </style>
 </head>
 <body>
 <div class="wrap">
     <header>
-        <span class="badge">lixe Partner-Kit</span>
-        <h1 style="margin-top:12px">lixe auf deiner Website</h1>
-        <p class="lead">Deine Besucher:innen melden sich an, lösen einen Code ein und sehen Inhalte im
-            intelligenten lixe-Player – ohne deine Seite zu verlassen.</p>
-        <p class="hint">Diese Seite ist zugleich die <strong>Vorschau</strong> und deine
-            <strong>Einrichtung</strong>: Schlüssel eintragen, Player prüfen, Schnipsel kopieren.</p>
+        <span class="badge">lixe Integration</span>
+        <h1 style="margin-top:12px">lixe Integration</h1>
+        <p class="lead">So bindest du die Plattform lixe.de ein.</p>
     </header>
 
     <div class="cols">
-        <!-- LINKS: Konfiguration + Snippet -->
         <section>
             <div class="card">
-                <h2>1 · Dein Einbett-Schlüssel</h2>
+                <h2>Integration mit Partnerschlüssel</h2>
+                <p>Den Schlüssel erhältst du im <strong>Partner-Portal von lixe.de</strong>.</p>
                 <div class="row">
                     <div>
-                        <label for="key">Öffentlicher Einbett-Schlüssel (emb_…)</label>
+                        <label for="key">Partnerschlüssel</label>
                         <input id="key" type="text" placeholder="emb_…" autocomplete="off" spellcheck="false">
                     </div>
                     <div style="flex:0 0 130px">
@@ -78,54 +76,45 @@
                         </select>
                     </div>
                 </div>
-                <div style="display:flex;gap:10px;margin-top:14px;flex-wrap:wrap">
+                <div style="margin-top:14px">
                     <button class="primary" id="btnPreview">Vorschau aktualisieren</button>
-                    <button class="ghost" id="btnReset">Auf Demo zurücksetzen</button>
                 </div>
-                <p class="hint">Kein Geheimnis – der Schlüssel darf offen stehen. Er wird lokal in deinem
-                    Browser gemerkt. Dauerhaft: trage ihn in <code>config.js</code> ein.</p>
             </div>
 
-            <div class="card" style="margin-top:20px">
-                <h2>2 · Einbett-Code (Variante A)</h2>
-                <p class="hint" style="margin-top:0">Diese eine Zeile an die Stelle deiner Seite, wo der Player
-                    erscheinen soll. Kein eigener Server nötig – die Anmeldung läuft über ein kurzes lixe-Popup.</p>
+            <div class="card">
+                <h2>Einbinden des Players</h2>
+                <p>Diese eine Zeile an die Stelle deiner Seite, wo der Player erscheinen soll:</p>
                 <pre><code id="snippet"></code></pre>
                 <button class="ghost" id="btnCopy" style="margin-top:10px">Code kopieren</button>
-                <div class="warn" id="allowWarn">
-                    <strong>Wichtig:</strong> Trage die Domain, auf der du einbettest, im lixe-CMS ein
-                    (Plattform-Partner → Integration → „Eingesetzt auf“). Sonst verweigert der Browser den Rahmen.
+                <div class="warn">
+                    Trage die Domain, auf der du einbettest, im Partner-Portal ein – sonst zeigt der Browser
+                    den Rahmen nicht an. Optional: <code>data-content="playlist:ID"</code>,
+                    <code>video:ID</code>, <code>live</code> oder <code>programm</code> wählt ein festes Ziel
+                    (leer = Startseite).
                 </div>
             </div>
 
-            <div class="card" style="margin-top:20px">
-                <h2>Nahtlos ohne zweiten Login? → Variante B (SSO)</h2>
-                <p class="hint" style="margin-top:0">Wenn deine Nutzer:innen bei dir schon eingeloggt sind, sollen
-                    sie bei lixe nicht noch einmal anmelden. Das braucht einen kleinen Server-Endpunkt und läuft
-                    nicht auf einer statischen Seite. Beispiele (PHP &amp; Node):
-                    <a href="variante-b-sso/">variante-b-sso/</a>.</p>
+            <div class="card">
+                <h2>Nahtlose Integration mit SSO</h2>
+                <p>Wenn deine Besucher:innen bei dir schon eingeloggt sind, meldet lixe sie automatisch mit an –
+                    ohne zweiten Login. Dein Server unterschreibt die Person mit dem geheimen Schlüssel, lixe gibt
+                    dafür ein Token für den Player zurück.</p>
+                <a href="https://github.com/michaelpraetorius/lixe-partner-kit/tree/main/variante-b-sso">
+                    Zur Doku (PHP- &amp; Node-Beispiel) →</a>
             </div>
         </section>
 
-        <!-- RECHTS: Live-Vorschau -->
         <aside>
             <h2>Live-Vorschau</h2>
             <div class="preview-wrap">
-                <div class="ratio" id="ratio">
-                    <div id="lixe-preview" style="position:absolute;inset:0"></div>
-                </div>
+                <div class="ratio" id="ratio"><div id="lixe-preview" style="position:absolute;inset:0"></div></div>
             </div>
             <p class="hint" id="previewHint" style="text-align:center"></p>
         </aside>
     </div>
 
     <footer>
-        <div>powered by lixe · Fragen an <a href="mailto:hello@lixe.de">hello@lixe.de</a></div>
-        <div style="margin-top:8px;font-size:12px;opacity:.85">
-            Backend <span id="vBackend">…</span>
-            · Partner-Kit <span id="vKit">–</span>
-            · Stand <span id="vStand">–</span>
-        </div>
+        Backend <span id="vBackend">…</span> · Partner-Kit <span id="vKit">–</span> · Stand <span id="vStand">–</span>
     </footer>
 </div>
 
@@ -137,36 +126,23 @@
     var APP = (CFG.appUrl || 'https://app.lixe.de').replace(/\/+$/, '');
     var DEMO_KEY = CFG.embedKey || '';
     var LS = 'lixe_kit_key';
-
-    // Footer: Versionen + Stand. Kit-Version und Stand werden beim Bearbeiten
-    // dieser Datei gesetzt; die Backend-Version wird live von /api/version geholt.
-    var KIT_VERSION = '1.0.0';
-    var STAND = '04.08.2026, 08:57 Uhr (MESZ)';
+    var KIT_VERSION = '1.1.0';
+    var STAND = '04.08.2026, 17:00 Uhr (MESZ)';
 
     var $ = function (id) { return document.getElementById(id); };
 
-    function aktKey() {
-        try { return window.localStorage.getItem(LS) || DEMO_KEY; } catch (e) { return DEMO_KEY; }
-    }
+    function aktKey() { try { return window.localStorage.getItem(LS) || DEMO_KEY; } catch (e) { return DEMO_KEY; } }
     function aktFmt() { return $('fmt').value === '16:9' ? '16:9' : '9:16'; }
 
     function snippet(key, fmt) {
         return '<script src="' + APP + '/einbetten/loader.js"\n'
-             + '        data-key="' + (key || 'DEIN_EINBETT_SCHLUESSEL') + '"\n'
+             + '        data-key="' + (key || 'DEIN_PARTNERSCHLUESSEL') + '"\n'
              + '        data-format="' + fmt + '"><\/script>';
     }
-
     function baueVorschau(key, fmt) {
-        var ziel = $('lixe-preview');
-        ziel.innerHTML = '';
+        var ziel = $('lixe-preview'); ziel.innerHTML = '';
         $('ratio').classList.toggle('q', fmt === '16:9');
-
-        if (!key || key.indexOf('emb_') !== 0) {
-            $('previewHint').textContent = 'Trage einen gültigen Schlüssel (emb_…) ein, um die Vorschau zu sehen.';
-            return;
-        }
-        // Genau das, was der Loader baut – hier direkt, damit die Vorschau
-        // unabhängig vom externen Script sofort steht.
+        if (!key || key.indexOf('emb_') !== 0) { $('previewHint').textContent = 'Trage einen gültigen Schlüssel (emb_…) ein, um die Vorschau zu sehen.'; return; }
         var iframe = document.createElement('iframe');
         iframe.src = APP + '/einbetten/app?k=' + encodeURIComponent(key);
         iframe.setAttribute('allow', 'autoplay; fullscreen; picture-in-picture; encrypted-media');
@@ -176,45 +152,40 @@
         ziel.appendChild(iframe);
         $('previewHint').textContent = 'So sieht der Player auf deiner Seite aus.';
     }
-
     function aktualisieren() {
-        var key = ($('key').value || '').trim();
-        var fmt = aktFmt();
+        var key = ($('key').value || '').trim(), fmt = aktFmt();
         try { if (key) { window.localStorage.setItem(LS, key); } } catch (e) {}
         $('snippet').textContent = snippet(key, fmt);
         baueVorschau(key, fmt);
     }
 
     $('btnPreview').addEventListener('click', aktualisieren);
-    $('btnReset').addEventListener('click', function () {
-        try { window.localStorage.removeItem(LS); } catch (e) {}
-        $('key').value = DEMO_KEY;
-        aktualisieren();
-    });
     $('btnCopy').addEventListener('click', function () {
         var t = $('snippet').textContent;
         (navigator.clipboard ? navigator.clipboard.writeText(t) : Promise.reject()).then(
             function () { $('btnCopy').textContent = 'Kopiert ✓'; setTimeout(function () { $('btnCopy').textContent = 'Code kopieren'; }, 1500); },
-            function () { /* Fallback: Nutzer markiert selbst. */ }
+            function () {}
         );
     });
 
-    // Footer füllen
-    function fussVersionen() {
-        $('vKit').textContent = KIT_VERSION;
-        $('vStand').textContent = STAND;
-        // Live-Stand des Backends – braucht CORS auf /api/version (ist gesetzt).
-        fetch(APP + '/api/version', { cache: 'no-store' })
-            .then(function (r) { return r.ok ? r.json() : null; })
-            .then(function (j) { $('vBackend').textContent = (j && j.build) ? j.build : 'nicht erreichbar'; })
-            .catch(function () { $('vBackend').textContent = 'nicht erreichbar'; });
-    }
+    // Button-/Akzentfarbe zentral aus dem lixe-Backend (CORS offen auf /api/theme).
+    fetch(APP + '/api/theme', { cache: 'no-store' })
+        .then(function (r) { return r.ok ? r.json() : null; })
+        .then(function (t) { if (t && t.accent) { document.documentElement.style.setProperty('--akz', t.accent); } })
+        .catch(function () {});
+
+    // Footer-Versionen.
+    $('vKit').textContent = KIT_VERSION;
+    $('vStand').textContent = STAND;
+    fetch(APP + '/api/version', { cache: 'no-store' })
+        .then(function (r) { return r.ok ? r.json() : null; })
+        .then(function (j) { $('vBackend').textContent = (j && j.build) ? j.build : 'nicht erreichbar'; })
+        .catch(function () { $('vBackend').textContent = 'nicht erreichbar'; });
 
     // Start
     $('key').value = aktKey();
     $('fmt').value = (CFG.format === '16:9') ? '16:9' : '9:16';
     aktualisieren();
-    fussVersionen();
 })();
 </script>
 </body>
