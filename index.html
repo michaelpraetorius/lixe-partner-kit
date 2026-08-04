@@ -29,6 +29,8 @@
         label{display:block;font-size:13px;font-weight:600;margin:12px 0 6px}
         input,select{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:10px;
             background:var(--bg);color:var(--fg);font-size:14px}
+        /* Checkbox NICHT auf 100% Breite ziehen – sonst sprengt sie das Label. */
+        input[type="checkbox"]{width:auto;padding:0;flex:0 0 auto}
         .row{display:flex;gap:10px;align-items:flex-end}
         .row > div{flex:1}
         button{cursor:pointer;border:0;border-radius:10px;padding:11px 16px;font-size:14px;font-weight:600}
@@ -134,7 +136,7 @@
     var APP = (CFG.appUrl || 'https://app.lixe.de').replace(/\/+$/, '');
     var DEMO_KEY = CFG.embedKey || '';
     var LS = 'lixe_kit_key';
-    var KIT_VERSION = '2026.08.04-05';
+    var KIT_VERSION = '2026.08.04-06';
 
     var $ = function (id) { return document.getElementById(id); };
 
