@@ -1,8 +1,9 @@
 # lixe Partner-Kit
 
-**lixe direkt auf deiner Website.** Deine Besucher:innen melden sich an, lösen
-einen Code ein und sehen Inhalte im intelligenten lixe-Player – ohne deine Seite
-zu verlassen, als wären sie auf lixe.de.
+**lixe direkt auf deiner Website.** Deine Besucher:innen sehen Inhalte im
+intelligenten lixe-Player – in derselben Anmutung wie die App – ohne deine Seite
+zu verlassen, als wären sie auf lixe.de. Öffentliche Inhalte laufen sofort;
+anmelden müssen sie sich nur, wenn du es verlangst.
 
 Es gibt zwei Wege. Du brauchst **einen** davon.
 
@@ -81,6 +82,14 @@ lixe-Popup, danach sehen deine Besucher:innen Inhalte und können Codes einlöse
 - `data-format` – `9:16` (Hochkant, Standard) oder `16:9` (Quer).
 - `data-target` – optional die `id` eines Elements, in das der Player soll
   (sonst erscheint er direkt hinter dem Script-Tag).
+- `data-content` – **was** der Player zeigt. Leer = die lixe-Startseite. Sonst
+  ein festes Ziel:
+  - `playlist:123` – eine Sammlung (lixe-ID)
+  - `video:ABCDEF` – ein einzelnes Video (spielt direkt)
+  - `live` – der Livestream
+  - `programm` – das lineare Programm
+- `data-login` – `required` erzwingt eine Anmeldung vor den Inhalten, `optional`
+  zeigt sie sofort. Leer = die Vorgabe des Partners aus dem CMS.
 
 👉 Vollständiges Beispiel: [`variante-a-embed/index.html`](variante-a-embed/index.html)
 
