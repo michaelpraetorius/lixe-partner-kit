@@ -102,7 +102,8 @@
     </div>
 
     <footer>
-        Backend <span id="vBackend">…</span> · Partner-Kit <span id="vKit">–</span> · Stand <span id="vStand">–</span>
+        <div id="lixeFooter"></div>
+        <div style="margin-top:6px">Partner-Kit <span id="vKit">–</span> · Stand <span id="vStand">–</span></div>
     </footer>
 </div>
 
@@ -153,19 +154,20 @@
         );
     });
 
-    // Button-/Akzentfarbe zentral aus dem lixe-Backend (CORS offen auf /api/theme).
+    // Akzentfarbe UND Footer-Text zentral aus dem lixe-Backend (CORS offen auf
+    // /api/theme). Der Footer ist derselbe wie im Web (footer.rendered).
     fetch(APP + '/api/theme', { cache: 'no-store' })
         .then(function (r) { return r.ok ? r.json() : null; })
-        .then(function (t) { if (t && t.accent) { document.documentElement.style.setProperty('--akz', t.accent); } })
+        .then(function (t) {
+            if (!t) { return; }
+            if (t.accent) { document.documentElement.style.setProperty('--akz', t.accent); }
+            if (t.footer && t.footer.rendered) { $('lixeFooter').textContent = t.footer.rendered; }
+        })
         .catch(function () {});
 
-    // Footer-Versionen.
+    // Kit-Kennung: Version + Stand.
     $('vKit').textContent = KIT_VERSION;
     $('vStand').textContent = STAND;
-    fetch(APP + '/api/version', { cache: 'no-store' })
-        .then(function (r) { return r.ok ? r.json() : null; })
-        .then(function (j) { $('vBackend').textContent = (j && j.build) ? j.build : 'nicht erreichbar'; })
-        .catch(function () { $('vBackend').textContent = 'nicht erreichbar'; });
 
     // Start
     $('key').value = aktKey();
