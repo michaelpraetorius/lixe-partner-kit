@@ -63,19 +63,8 @@
             <div class="card">
                 <h2>Integration mit Partnerschlüssel</h2>
                 <p>Den Schlüssel erhältst du im <strong>Partner-Portal von lixe.de</strong>.</p>
-                <div class="row">
-                    <div>
-                        <label for="key">Partnerschlüssel</label>
-                        <input id="key" type="text" placeholder="emb_…" autocomplete="off" spellcheck="false">
-                    </div>
-                    <div style="flex:0 0 130px">
-                        <label for="fmt">Format</label>
-                        <select id="fmt">
-                            <option value="9:16">Hochkant 9:16</option>
-                            <option value="16:9">Quer 16:9</option>
-                        </select>
-                    </div>
-                </div>
+                <label for="key">Partnerschlüssel</label>
+                <input id="key" type="text" placeholder="emb_…" autocomplete="off" spellcheck="false">
                 <div style="margin-top:14px">
                     <button class="primary" id="btnPreview">Vorschau aktualisieren</button>
                 </div>
@@ -132,16 +121,13 @@
     var $ = function (id) { return document.getElementById(id); };
 
     function aktKey() { try { return window.localStorage.getItem(LS) || DEMO_KEY; } catch (e) { return DEMO_KEY; } }
-    function aktFmt() { return $('fmt').value === '16:9' ? '16:9' : '9:16'; }
 
-    function snippet(key, fmt) {
+    function snippet(key) {
         return '<script src="' + APP + '/einbetten/loader.js"\n'
-             + '        data-key="' + (key || 'DEIN_PARTNERSCHLUESSEL') + '"\n'
-             + '        data-format="' + fmt + '"><\/script>';
+             + '        data-key="' + (key || 'DEIN_PARTNERSCHLUESSEL') + '"><\/script>';
     }
-    function baueVorschau(key, fmt) {
+    function baueVorschau(key) {
         var ziel = $('lixe-preview'); ziel.innerHTML = '';
-        $('ratio').classList.toggle('q', fmt === '16:9');
         if (!key || key.indexOf('emb_') !== 0) { $('previewHint').textContent = 'Trage einen gültigen Schlüssel (emb_…) ein, um die Vorschau zu sehen.'; return; }
         var iframe = document.createElement('iframe');
         iframe.src = APP + '/einbetten/app?k=' + encodeURIComponent(key);
@@ -153,10 +139,10 @@
         $('previewHint').textContent = 'So sieht der Player auf deiner Seite aus.';
     }
     function aktualisieren() {
-        var key = ($('key').value || '').trim(), fmt = aktFmt();
+        var key = ($('key').value || '').trim();
         try { if (key) { window.localStorage.setItem(LS, key); } } catch (e) {}
-        $('snippet').textContent = snippet(key, fmt);
-        baueVorschau(key, fmt);
+        $('snippet').textContent = snippet(key);
+        baueVorschau(key);
     }
 
     $('btnPreview').addEventListener('click', aktualisieren);
@@ -184,7 +170,6 @@
 
     // Start
     $('key').value = aktKey();
-    $('fmt').value = (CFG.format === '16:9') ? '16:9' : '9:16';
     aktualisieren();
 })();
 </script>

@@ -72,14 +72,12 @@ Eine Zeile, an die Stelle deiner Seite, wo der Player erscheinen soll:
 
 ```html
 <script src="https://app.lixe.de/einbetten/loader.js"
-        data-key="DEIN_EINBETT_SCHLUESSEL"
-        data-format="9:16"></script>
+        data-key="DEIN_EINBETT_SCHLUESSEL"></script>
 ```
 
 Das war’s. Der Loader baut den Player-Rahmen, die Anmeldung läuft über ein kurzes
 lixe-Popup, danach sehen deine Besucher:innen Inhalte und können Codes einlösen.
 
-- `data-format` – `9:16` (Hochkant, Standard) oder `16:9` (Quer).
 - `data-target` – optional die `id` eines Elements, in das der Player soll
   (sonst erscheint er direkt hinter dem Script-Tag).
 - `data-content` – **was** der Player zeigt. Leer = die lixe-Startseite. Sonst
