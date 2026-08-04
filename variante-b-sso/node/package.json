@@ -1,0 +1,9 @@
+{
+  "name": "lixe-partner-sso-demo",
+  "version": "1.0.0",
+  "description": "lixe SSO-Demo (Variante B) – nahtlose Anmeldung, ohne externe Abhängigkeiten.",
+  "private": true,
+  "scripts": {
+    "start": "node server.js"
+  }
+}
