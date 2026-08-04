@@ -119,7 +119,14 @@
         </aside>
     </div>
 
-    <footer>powered by lixe · Fragen an <a href="mailto:hello@lixe.de">hello@lixe.de</a></footer>
+    <footer>
+        <div>powered by lixe · Fragen an <a href="mailto:hello@lixe.de">hello@lixe.de</a></div>
+        <div style="margin-top:8px;font-size:12px;opacity:.85">
+            Backend <span id="vBackend">…</span>
+            · Partner-Kit <span id="vKit">–</span>
+            · Stand <span id="vStand">–</span>
+        </div>
+    </footer>
 </div>
 
 <script src="config.js"></script>
@@ -130,6 +137,11 @@
     var APP = (CFG.appUrl || 'https://app.lixe.de').replace(/\/+$/, '');
     var DEMO_KEY = CFG.embedKey || '';
     var LS = 'lixe_kit_key';
+
+    // Footer: Versionen + Stand. Kit-Version und Stand werden beim Bearbeiten
+    // dieser Datei gesetzt; die Backend-Version wird live von /api/version geholt.
+    var KIT_VERSION = '1.0.0';
+    var STAND = '04.08.2026, 08:57 Uhr (MESZ)';
 
     var $ = function (id) { return document.getElementById(id); };
 
@@ -187,10 +199,22 @@
         );
     });
 
+    // Footer füllen
+    function fussVersionen() {
+        $('vKit').textContent = KIT_VERSION;
+        $('vStand').textContent = STAND;
+        // Live-Stand des Backends – braucht CORS auf /api/version (ist gesetzt).
+        fetch(APP + '/api/version', { cache: 'no-store' })
+            .then(function (r) { return r.ok ? r.json() : null; })
+            .then(function (j) { $('vBackend').textContent = (j && j.build) ? j.build : 'nicht erreichbar'; })
+            .catch(function () { $('vBackend').textContent = 'nicht erreichbar'; });
+    }
+
     // Start
     $('key').value = aktKey();
     $('fmt').value = (CFG.format === '16:9') ? '16:9' : '9:16';
     aktualisieren();
+    fussVersionen();
 })();
 </script>
 </body>
