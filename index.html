@@ -136,7 +136,7 @@
     var APP = (CFG.appUrl || 'https://app.lixe.de').replace(/\/+$/, '');
     var DEMO_KEY = CFG.embedKey || '';
     var LS = 'lixe_kit_key';
-    var KIT_VERSION = '2026.08.04-06';
+    var KIT_VERSION = '2026.08.04-07';
 
     var $ = function (id) { return document.getElementById(id); };
 
@@ -145,8 +145,10 @@
     // Gewählte Optionen aus den Bedienelementen → data-content / data-nav.
     function opts() {
         var typ = $('content').value, id = ($('cid').value || '').trim(), content = '';
-        if (typ === 'video' && id) { content = 'video:' + id; }
-        else if (typ === 'playlist' && id) { content = 'playlist:' + id; }
+        // Typ auch OHNE ID mitgeben (video:/playlist:) – dann zeigt der Player
+        // eine klare Meldung („kein Video ausgewählt") statt stumm die Startseite.
+        if (typ === 'video') { content = 'video:' + id; }
+        else if (typ === 'playlist') { content = 'playlist:' + id; }
         else if (typ === 'live') { content = 'live'; }
         else if (typ === 'programm') { content = 'programm'; }
         return { content: content, nav: $('nav').checked };
