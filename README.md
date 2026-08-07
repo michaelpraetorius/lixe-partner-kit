@@ -117,6 +117,30 @@ Fertige Beispiele:
 
 ---
 
+## Mitspiel-Quiz & Einblendungen (dibidam) im eingebetteten Player
+
+Einblendungen über dem Programm – auch das eingebettete Mitspiel-Quiz von
+dibidam – laufen im Partner-Player automatisch mit. Du musst dafür nichts
+einbauen: Die Einblendung kommt aus dem lixe-CMS, der Player reicht die
+Zuschauer-Kennung selbst weiter.
+
+Wer **im Player angemeldet** ist (Popup oder SSO), spielt mit signierter
+Kennung mit – Punkte, Name und Gewinncode hängen am lixe-Konto, auch auf
+deiner Domain. Wer **nicht angemeldet** ist, spielt als Gast mit einer
+Kennung, die nur in seinem Browser liegt; sie ist nicht signiert.
+
+Verlangt das Quiz eine Signatur (in dibidam: „Signatur erforderlich“ bzw.
+Partner ohne Gast-Zulassung), werden unsignierte Gäste dort abgewiesen. Dann
+hast du zwei Möglichkeiten:
+
+- **Anmeldung erzwingen:** `data-login="required"` im Einbett-Schnipsel (oder
+  die Partner-Vorgabe im lixe-CMS) – so ist jede:r Mitspielende angemeldet und
+  signiert.
+- **Gäste zulassen:** In dibidam „Gäste ohne Signatur“ erlauben – dann spielen
+  auch Unangemeldete mit, nur eben ohne Konto-Bindung.
+
+---
+
 ## Schnellstart
 
 1. **Nur ausprobieren:** [`index.html`](index.html) öffnen (oder über GitHub Pages)
