@@ -42,6 +42,25 @@ Domain-Liste die `github.io`-Adresse schon enthält. Für deinen Einsatz trägst
 
 ---
 
+## Einblendungen (Overlays) über dem Player gestalten
+
+Du kannst eigene Inhalte **über** dem laufenden Programm einblenden – Bauchbinden,
+Abzeichen, Hinweise oder ein **Mitspiel-Quiz per iFrame** – frei positioniert von
+oben links bis unten rechts. Die vollständige Anleitung (Koordinatensystem,
+Positionieren, Platzhalter, eingebettete Partnerseiten mit Zuschauer-Kennung) liegt
+als eigene Seite bei:
+
+**[→ Einblendungen-Dokumentation](einblendungen/)**  ·  auf GitHub Pages unter
+`https://<dein-github-name>.github.io/lixe-partner-kit/einblendungen/`
+
+Kurzfassung: Du gestaltest gegen eine Bühne **1080 breit × `var(--ov-hoehe)`** hoch
+(unten links verankert, skaliert auf jedes Gerät, gleich auf Web/iOS/Android). Für
+freie Positionen legst du deinen Inhalt in eine Bühne voller Höhe und verankerst mit
+`position:absolute`. `{uid}`/`{sig}` versorgen ein eingebettetes Quiz mit einer
+pseudonymen, signierten Zuschauer-Kennung.
+
+---
+
 ## Zwei Schlüssel – nicht verwechseln
 
 lixe arbeitet mit zwei Schlüsseln. Der Unterschied ist wichtig:
