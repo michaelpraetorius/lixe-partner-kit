@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>Einblendungen — Partner-Dokumentation · lixe</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  :root{
+    --bg:#eef1f4; --panel:#ffffff; --ink:#141922; --ink-soft:#4a5568;
+    --line:#d3d9e0; --line-strong:#b7c0cb;
+    --accent:#b07d1e; --accent-ink:#7a5410; --reserve:#c2543c;
+    --stage:#1a2230; --stage-line:rgba(255,255,255,.16); --stage-ink:#e7ecf3;
+    --code-bg:#0f141c; --code-ink:#e7ecf3;
+    --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+    --sans:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  }
+  @media (prefers-color-scheme:dark){
+    :root:not([data-theme="light"]){
+      --bg:#0e1116; --panel:#151b24; --ink:#eef1f5; --ink-soft:#9aa6b4;
+      --line:#252d38; --line-strong:#37414f;
+      --accent:#e0a94e; --accent-ink:#f0c886; --reserve:#d8664c;
+      --stage:#0a0e14; --code-bg:#0a0e14;
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#0e1116; --panel:#151b24; --ink:#eef1f5; --ink-soft:#9aa6b4;
+    --line:#252d38; --line-strong:#37414f;
+    --accent:#e0a94e; --accent-ink:#f0c886; --reserve:#d8664c;
+    --stage:#0a0e14; --code-bg:#0a0e14;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.6;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1080px;margin:0 auto;padding:44px 24px 90px}
+  a{color:var(--accent-ink)}
+  code.inl{font-family:var(--mono);font-size:.88em;background:color-mix(in srgb,var(--line) 55%,transparent);padding:1px 5px;border-radius:4px}
+
+  header.top{margin-bottom:14px}
+  .eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--accent-ink);margin:0 0 12px}
+  h1{font-size:clamp(30px,5vw,44px);line-height:1.08;margin:0 0 12px;letter-spacing:-.02em;text-wrap:balance;font-weight:800}
+  .lede{font-size:18px;color:var(--ink-soft);max-width:65ch;margin:0}
+  .platforms{display:flex;gap:8px;flex-wrap:wrap;margin:20px 0 0}
+  .pill{font-family:var(--mono);font-size:12px;letter-spacing:.04em;border:1px solid var(--line-strong);border-radius:999px;padding:5px 12px;color:var(--ink-soft)}
+  .pill b{color:var(--accent-ink);font-weight:600}
+
+  nav.toc{display:flex;flex-wrap:wrap;gap:8px 18px;margin:28px 0 40px;padding:16px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+  nav.toc a{font-family:var(--mono);font-size:13px;color:var(--ink-soft);text-decoration:none}
+  nav.toc a:hover{color:var(--accent-ink)}
+  nav.toc .n{color:var(--accent-ink)}
+
+  section{margin:0 0 52px;scroll-margin-top:20px}
+  h2{font-size:26px;margin:0 0 16px;letter-spacing:-.01em;font-weight:750;display:flex;align-items:baseline;gap:12px}
+  h2 .num{font-family:var(--mono);font-size:15px;color:var(--accent-ink);font-weight:600}
+  h3{font-size:17px;margin:26px 0 10px;font-weight:700}
+  p{margin:0 0 14px;max-width:66ch}
+  ul{max-width:66ch;padding-left:1.1em}
+  li{margin:6px 0}
+
+  .grid2{display:grid;grid-template-columns:minmax(300px,360px) 1fr;gap:40px;align-items:start}
+  @media (max-width:820px){.grid2{grid-template-columns:1fr;gap:30px}}
+  .sticky{position:sticky;top:20px}
+  @media (max-width:820px){.sticky{position:static}}
+
+  /* Blueprint phone */
+  .measure-top{display:flex;align-items:center;gap:8px;font-family:var(--mono);font-size:11px;color:var(--ink-soft);letter-spacing:.1em;margin:0 0 6px;padding:0 2px}
+  .measure-top .bar{flex:1;height:1px;background:var(--line-strong);position:relative}
+  .measure-top .bar::before,.measure-top .bar::after{content:"";position:absolute;top:-3px;width:1px;height:7px;background:var(--line-strong)}
+  .measure-top .bar::before{left:0}.measure-top .bar::after{right:0}
+  .phone-row{display:flex;gap:8px}
+  .measure-side{writing-mode:vertical-rl;transform:rotate(180deg);font-family:var(--mono);font-size:11px;color:var(--ink-soft);letter-spacing:.1em;display:flex;align-items:center;justify-content:center;white-space:nowrap}
+  .phone{flex:1;position:relative;aspect-ratio:9/17;background:var(--stage);border:2px solid var(--line-strong);border-radius:22px;overflow:hidden;box-shadow:0 22px 54px rgba(0,0,0,.26)}
+  .phone .gl{position:absolute;background:var(--stage-line)}
+  .v1{left:33.33%;top:0;bottom:0;width:1px}.v2{left:66.66%;top:0;bottom:0;width:1px}
+  .h1{top:33.33%;left:0;right:0;height:1px}.h2{top:66.66%;left:0;right:0;height:1px}
+  .safe{position:absolute;inset:12px 12px 58px 12px;border:1px dashed var(--stage-line);border-radius:12px;pointer-events:none}
+  .safe .tag{position:absolute;top:-9px;left:16px;background:var(--stage);padding:0 6px;font-family:var(--mono);font-size:10px;color:var(--stage-ink);opacity:.7}
+  .reserve{position:absolute;left:0;right:0;bottom:0;height:52px;background:repeating-linear-gradient(-45deg,transparent 0 7px,rgba(216,102,76,.14) 7px 14px);border-top:1px solid rgba(216,102,76,.5);display:flex;align-items:center;justify-content:center;gap:8px;font-family:var(--mono);font-size:11px;color:var(--reserve);letter-spacing:.08em}
+  .origin{position:absolute;left:12px;bottom:58px;width:14px;height:14px;pointer-events:none}
+  .origin::before,.origin::after{content:"";position:absolute;background:var(--accent)}
+  .origin::before{left:0;bottom:0;width:14px;height:2px}.origin::after{left:0;bottom:0;width:2px;height:14px}
+  .origin-tag{position:absolute;left:14px;bottom:62px;font-family:var(--mono);font-size:10px;color:var(--accent);white-space:nowrap}
+  .zone{position:absolute;font-family:var(--mono);font-size:11px;font-weight:600;color:var(--stage-ink);background:rgba(255,255,255,.06);border:1px solid var(--stage-line);border-radius:8px;padding:5px 8px;white-space:nowrap;cursor:pointer;transition:.15s;--rand:14px}
+  .zone:hover{border-color:var(--accent);color:var(--accent-ink)}
+  .zone.active{background:var(--accent);color:#12151b;border-color:var(--accent);font-weight:700}
+  .zone:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+  .tl{top:var(--rand);left:var(--rand)}.tr{top:var(--rand);right:var(--rand)}
+  .bl{bottom:calc(var(--rand) + 46px);left:var(--rand)}.br{bottom:calc(var(--rand) + 46px);right:var(--rand)}
+  .tc{top:var(--rand);left:50%;transform:translateX(-50%)}.bc{bottom:calc(var(--rand) + 46px);left:50%;transform:translateX(-50%)}
+  .ml{top:47%;left:var(--rand);transform:translateY(-50%)}.mr{top:47%;right:var(--rand);transform:translateY(-50%)}
+  .mc{top:47%;left:50%;transform:translate(-50%,-50%)}
+  .phone-cap{font-family:var(--mono);font-size:12px;color:var(--ink-soft);text-align:center;margin:14px 0 0;letter-spacing:.04em}
+  .detail{margin-top:16px;border:1px solid var(--line);border-radius:12px;background:var(--panel);padding:14px 16px;min-height:92px}
+  .detail h4{margin:0 0 8px;font-size:14px;font-family:var(--mono);color:var(--accent-ink);letter-spacing:.03em}
+  .detail p{font-size:13px;color:var(--ink-soft);margin:0 0 10px}
+  .detail pre{margin:0}
+
+  /* Facts / cards */
+  .facts{list-style:none;padding:0;margin:0;display:grid;gap:0}
+  .facts li{display:grid;grid-template-columns:170px 1fr;gap:16px;padding:12px 0;border-top:1px solid var(--line);margin:0}
+  .facts li:last-child{border-bottom:1px solid var(--line)}
+  .facts .k{font-family:var(--mono);font-size:13px;color:var(--accent-ink)}
+  .facts .v{color:var(--ink-soft)}
+  .facts .v b{color:var(--ink);font-weight:650}
+
+  figure.code{margin:0 0 14px;border-radius:12px;overflow:hidden;border:1px solid var(--line)}
+  figure.code figcaption{display:flex;justify-content:space-between;align-items:center;background:var(--panel);padding:9px 14px;border-bottom:1px solid var(--line);font-family:var(--mono);font-size:12px;color:var(--ink-soft)}
+  .copy{font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;background:transparent;border:1px solid var(--line-strong);color:var(--ink-soft);padding:4px 10px;border-radius:6px;cursor:pointer}
+  .copy:hover{border-color:var(--accent);color:var(--accent-ink)}
+  pre{margin:0;background:var(--code-bg);color:var(--code-ink);padding:16px;overflow-x:auto;font-family:var(--mono);font-size:12.5px;line-height:1.65}
+  pre .t{color:#7fb3ff}pre .a{color:#e0a94e}pre .s{color:#9ece9a}pre .c{color:#6b7686;font-style:italic}pre .ph{color:#e0a94e;background:rgba(224,169,78,.12);border-radius:3px;padding:0 2px}
+
+  .tbl-wrap{overflow-x:auto}
+  table{width:100%;border-collapse:collapse;font-size:14px;min-width:520px}
+  th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+  th{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:var(--ink-soft);font-weight:600}
+  td.ph{font-family:var(--mono);color:var(--accent-ink);white-space:nowrap}
+  tr.hl td{background:color-mix(in srgb,var(--accent) 10%,transparent)}
+  td b{color:var(--ink)}
+
+  .note{border-left:3px solid var(--accent);background:color-mix(in srgb,var(--accent) 8%,transparent);padding:12px 16px;border-radius:0 8px 8px 0;font-size:14px;color:var(--ink-soft);margin:14px 0}
+  .note.warn{border-left-color:var(--reserve);background:color-mix(in srgb,var(--reserve) 9%,transparent)}
+  .note b{color:var(--ink)}
+
+  footer{margin-top:60px;padding-top:20px;border-top:1px solid var(--line);font-size:13px;color:var(--ink-soft);font-family:var(--mono);letter-spacing:.03em}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header class="top">
+    <p class="eyebrow">lixe · Einblendungen · Partner-Dokumentation</p>
+    <h1>Einblendungen über dem Player</h1>
+    <p class="lede">Eine Einblendung ist freies HTML/CSS, das über dem laufenden Programm liegt. Diese Doku zeigt, wie du Inhalte <b>überall</b> platzierst — von oben links bis unten rechts — und wie du eingebettete Partnerseiten (z. B. Mitspiel-Quiz) mit einer Zuschauer-Kennung versorgst.</p>
+    <div class="platforms">
+      <span class="pill">Gilt gleich auf <b>Web</b> · <b>iOS</b> · <b>Android</b></span>
+      <span class="pill">Bühne <b>1080</b> breit</span>
+      <span class="pill">Höhe <b>var(--ov-hoehe)</b></span>
+    </div>
+  </header>
+
+  <nav class="toc">
+    <a href="#buehne"><span class="n">01</span> Die Bühne</a>
+    <a href="#positionieren"><span class="n">02</span> Positionieren</a>
+    <a href="#beispiele"><span class="n">03</span> Beispiele</a>
+    <a href="#platzhalter"><span class="n">04</span> Platzhalter</a>
+    <a href="#iframes"><span class="n">05</span> Eingebettete Seiten</a>
+    <a href="#touch"><span class="n">06</span> Bedienbar vs. durchlässig</a>
+    <a href="#grenzen"><span class="n">07</span> Grenzen &amp; Tipps</a>
+  </nav>
+
+  <!-- 01 -->
+  <section id="buehne">
+    <h2><span class="num">01</span>Die Bühne</h2>
+    <p>Du gestaltest immer gegen eine feste, virtuelle Bühne. Der Player skaliert sie auf jedes Gerät — dein Code bleibt identisch, egal ob Handy schmal oder breit ist, und egal ob Web, iOS oder Android.</p>
+    <ul class="facts">
+      <li><span class="k">Breite 1080</span><span class="v">Feste Rechen-Einheit. <b>width: 100%</b> in deinem HTML entspricht 1080. <b>540</b> ist halbe Breite. Der Player skaliert die ganze Bühne auf die Gerätebreite.</span></li>
+      <li><span class="k">Höhe var(--ov-hoehe)</span><span class="v">Die volle nutzbare Höhe vom unteren Rand bis knapp über den Ton-Knopf. <b>Keine feste Pixelzahl</b> nehmen — diese CSS-Variable passt sich Gerät und Drehung an und ist die Grundlage für Positionen oben/in den Ecken.</span></li>
+      <li><span class="k">Ursprung unten&nbsp;links</span><span class="v">Ohne eigene Positionierung <b>stapelt sich Inhalt am unteren Rand</b> und wächst nach oben — ideal für einfache Bauchbinden.</span></li>
+      <li><span class="k">Unten reserviert</span><span class="v">Der untere Streifen gehört <b>Wischen &amp; Ton</b> — die Bühne endet bewusst darüber. Halte an allen Rändern etwas Abstand.</span></li>
+      <li><span class="k">Alle Plattformen gleich</span><span class="v">Web, iOS und Android rendern dieselbe HTML-Einblendung identisch. Was du hier baust, sieht überall gleich aus.</span></li>
+    </ul>
+  </section>
+
+  <!-- 02 -->
+  <section id="positionieren">
+    <h2><span class="num">02</span>Positionieren — überall hin</h2>
+    <p>Für freie Positionierung (Ecken, Kanten, Mitte) legst du deinen Inhalt in eine <b>Bühne mit voller Höhe</b> und positionierst die Elemente absolut. Tippe im Blueprint eine Zone an — der passende CSS-Code erscheint darunter.</p>
+
+    <div class="grid2">
+      <div class="sticky">
+        <div class="measure-top"><span>0</span><span class="bar"></span><span>1080</span></div>
+        <div class="phone-row">
+          <div class="measure-side">Höhe: var(--ov-hoehe)</div>
+          <div class="phone" id="phone">
+            <span class="gl v1"></span><span class="gl v2"></span><span class="gl h1"></span><span class="gl h2"></span>
+            <div class="safe"><span class="tag">--rand</span></div>
+            <button class="zone tl" data-pos="tl">oben links</button>
+            <button class="zone tc" data-pos="tc">oben mitte</button>
+            <button class="zone tr" data-pos="tr">oben rechts</button>
+            <button class="zone ml" data-pos="ml">mitte links</button>
+            <button class="zone mc" data-pos="mc">mitte</button>
+            <button class="zone mr" data-pos="mr">mitte rechts</button>
+            <button class="zone bl" data-pos="bl">unten links</button>
+            <button class="zone bc" data-pos="bc">unten mitte</button>
+            <button class="zone br" data-pos="br">unten rechts</button>
+            <span class="origin"></span><span class="origin-tag">0,0 · unten links</span>
+            <div class="reserve">◂ Wischen · Ton ▸ reserviert</div>
+          </div>
+        </div>
+        <p class="phone-cap">Hochkant · skaliert auf jede Gerätebreite</p>
+        <div class="detail" id="detail" aria-live="polite">
+          <h4 id="d-title">Position wählen</h4>
+          <p id="d-desc">Tippe oben eine der neun Zonen an — hier erscheint der CSS-Block.</p>
+          <div id="d-code"></div>
+        </div>
+      </div>
+
+      <div>
+        <h3>Das Grundgerüst</h3>
+        <p>Eine Bühne mit <code class="inl">position: relative</code> und <code class="inl">height: var(--ov-hoehe)</code> spannt die volle Fläche auf; Kinder mit <code class="inl">position: absolute</code> sitzen dann exakt an Ecken und Kanten.</p>
+        <figure class="code">
+          <figcaption>Feld „Inhalt"<button class="copy" data-copy="grund">Kopieren</button></figcaption>
+<pre id="grund"><span class="t">&lt;div</span> <span class="a">class</span>=<span class="s">"stage"</span><span class="t">&gt;</span>
+  <span class="t">&lt;div</span> <span class="a">class</span>=<span class="s">"oben-rechts"</span><span class="t">&gt;</span>LIVE<span class="t">&lt;/div&gt;</span>
+  <span class="t">&lt;div</span> <span class="a">class</span>=<span class="s">"unten"</span><span class="t">&gt;</span>Deine Bauchbinde<span class="t">&lt;/div&gt;</span>
+<span class="t">&lt;/div&gt;</span>
+
+<span class="t">&lt;style&gt;</span>
+<span class="c">/* Volle Bühne: 1080 breit × ganze nutzbare Höhe */</span>
+<span class="a">.stage</span>{
+  <span class="a">position</span>: relative;
+  <span class="a">width</span>: 100%;
+  <span class="a">height</span>: <span class="s">var(--ov-hoehe)</span>;
+  <span class="a">--rand</span>: 40px;          <span class="c">/* Sicherheitsabstand */</span>
+}
+<span class="a">.oben-rechts</span>{ <span class="a">position</span>: absolute; <span class="a">top</span>: var(--rand); <span class="a">right</span>: var(--rand); }
+<span class="a">.unten</span>{ <span class="a">position</span>: absolute; <span class="a">left</span>: var(--rand); <span class="a">right</span>: var(--rand); <span class="a">bottom</span>: var(--rand); }
+<span class="t">&lt;/style&gt;</span></pre>
+        </figure>
+
+        <h3>Alle neun Positionen</h3>
+        <p>Setz die passende Regel auf dein Element (innerhalb der <code class="inl">.stage</code>):</p>
+        <figure class="code">
+          <figcaption>Positions-Regeln<button class="copy" data-copy="alle">Kopieren</button></figcaption>
+<pre id="alle"><span class="c">/* Ecken */</span>
+<span class="a">.oben-links</span>  { <span class="a">top</span>: var(--rand);    <span class="a">left</span>:  var(--rand); }
+<span class="a">.oben-rechts</span> { <span class="a">top</span>: var(--rand);    <span class="a">right</span>: var(--rand); }
+<span class="a">.unten-links</span> { <span class="a">bottom</span>: var(--rand); <span class="a">left</span>:  var(--rand); }
+<span class="a">.unten-rechts</span>{ <span class="a">bottom</span>: var(--rand); <span class="a">right</span>: var(--rand); }
+<span class="c">/* Kanten (mittig auf der Kante) */</span>
+<span class="a">.oben-mitte</span>  { <span class="a">top</span>: var(--rand);    <span class="a">left</span>: 50%; <span class="a">transform</span>: translateX(-50%); }
+<span class="a">.unten-mitte</span> { <span class="a">bottom</span>: var(--rand); <span class="a">left</span>: 50%; <span class="a">transform</span>: translateX(-50%); }
+<span class="a">.mitte-links</span> { <span class="a">top</span>: 50%; <span class="a">left</span>:  var(--rand); <span class="a">transform</span>: translateY(-50%); }
+<span class="a">.mitte-rechts</span>{ <span class="a">top</span>: 50%; <span class="a">right</span>: var(--rand); <span class="a">transform</span>: translateY(-50%); }
+<span class="c">/* Mitte */</span>
+<span class="a">.mitte</span>       { <span class="a">top</span>: 50%; <span class="a">left</span>: 50%; <span class="a">transform</span>: translate(-50%,-50%); }</pre>
+        </figure>
+        <div class="note"><b>Ohne Bühne = unten:</b> Lässt du die <code class="inl">.stage</code> weg und schreibst einfach Inhalt, sitzt er am <b>unteren Rand</b> und wächst nach oben. Für „oben"/Ecken brauchst du die Bühne mit <code class="inl">height: var(--ov-hoehe)</code>.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 03 -->
+  <section id="beispiele">
+    <h2><span class="num">03</span>Beispiele</h2>
+
+    <figure class="code">
+      <figcaption>Abzeichen oben rechts<button class="copy" data-copy="ex-badge">Kopieren</button></figcaption>
+<pre id="ex-badge"><span class="t">&lt;div</span> <span class="a">class</span>=<span class="s">"stage"</span><span class="t">&gt;&lt;div</span> <span class="a">class</span>=<span class="s">"badge"</span><span class="t">&gt;</span>LIVE<span class="t">&lt;/div&gt;&lt;/div&gt;</span>
+<span class="t">&lt;style&gt;</span>
+<span class="a">.stage</span>{ <span class="a">position</span>:relative; <span class="a">width</span>:100%; <span class="a">height</span>:<span class="s">var(--ov-hoehe)</span>; }
+<span class="a">.badge</span>{ <span class="a">position</span>:absolute; <span class="a">top</span>:40px; <span class="a">right</span>:40px;
+  <span class="a">background</span>:#E8590C; <span class="a">color</span>:#fff; <span class="a">font-weight</span>:800; <span class="a">font-size</span>:24px;
+  <span class="a">padding</span>:8px 16px; <span class="a">border-radius</span>:999px; }
+<span class="t">&lt;/style&gt;</span></pre>
+    </figure>
+
+    <figure class="code">
+      <figcaption>Bauchbinde unten (mit Platzhaltern)<button class="copy" data-copy="ex-binde">Kopieren</button></figcaption>
+<pre id="ex-binde"><span class="t">&lt;div</span> <span class="a">class</span>=<span class="s">"stage"</span><span class="t">&gt;&lt;div</span> <span class="a">class</span>=<span class="s">"binde"</span><span class="t">&gt;</span>
+  <span class="t">&lt;b&gt;</span><span class="ph">{titel}</span><span class="t">&lt;/b&gt;&lt;br&gt;</span><span class="ph">{sendung}</span> · jetzt im Programm
+<span class="t">&lt;/div&gt;&lt;/div&gt;</span>
+<span class="t">&lt;style&gt;</span>
+<span class="a">.stage</span>{ <span class="a">position</span>:relative; <span class="a">width</span>:100%; <span class="a">height</span>:<span class="s">var(--ov-hoehe)</span>; }
+<span class="a">.binde</span>{ <span class="a">position</span>:absolute; <span class="a">left</span>:40px; <span class="a">right</span>:40px; <span class="a">bottom</span>:40px;
+  <span class="a">background</span>:rgba(0,0,0,.6); <span class="a">color</span>:#fff; <span class="a">border-radius</span>:14px;
+  <span class="a">padding</span>:16px 20px; <span class="a">font-size</span>:30px; }
+<span class="a">.binde b</span>{ <span class="a">font-size</span>:40px; }
+<span class="t">&lt;/style&gt;</span></pre>
+    </figure>
+
+    <figure class="code">
+      <figcaption>Voll-Höhe: eingebettete Partnerseite (Quiz)<button class="copy" data-copy="ex-quiz">Kopieren</button></figcaption>
+<pre id="ex-quiz"><span class="t">&lt;iframe</span> <span class="a">src</span>=<span class="s">"https://partner.de/quiz?uid=</span><span class="ph">{uid}</span><span class="s">&amp;sig=</span><span class="ph">{sig}</span><span class="s">&amp;name=</span><span class="ph">{name}</span><span class="s">&amp;video=</span><span class="ph">{video_id}</span><span class="s">"</span>
+        <span class="a">style</span>=<span class="s">"width:100%; height:var(--ov-hoehe); border:0"</span>
+        <span class="a">allow</span>=<span class="s">"autoplay; fullscreen"</span> <span class="a">allowfullscreen</span><span class="t">&gt;&lt;/iframe&gt;</span></pre>
+    </figure>
+    <p>Grundstyling bringt der Player mit: heller Text mit Schatten, große Überschriften. Du kannst mit eigenem <code class="inl">&lt;style&gt;</code> alles überschreiben. Halte Inhalte innerhalb der 1080-Breite.</p>
+  </section>
+
+  <!-- 04 -->
+  <section id="platzhalter">
+    <h2><span class="num">04</span>Platzhalter</h2>
+    <p>Geschweifte Klammern werden beim Ausliefern durch echte Werte ersetzt — jede zusehende Person sieht ihren eigenen Stand. Auch in <code class="inl">&lt;iframe src&gt;</code> nutzbar.</p>
+    <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Platzhalter</th><th>Wert</th></tr></thead>
+      <tbody>
+        <tr><td class="ph">{name}</td><td>Vorname der zusehenden Person, sonst <b>du</b></td></tr>
+        <tr class="hl"><td class="ph">{uid}</td><td>Pseudonyme, gleichbleibende Kennung der Person — für eingebettete Seiten (Quiz). Ohne Anmeldung leer. <b>Kein Klartext, nicht durchzählbar.</b></td></tr>
+        <tr class="hl"><td class="ph">{sig}</td><td>Signatur zur <code class="inl">{uid}</code> (HMAC) — die Partnerseite kann die Kennung damit verifizieren. Leer, solange kein Schlüssel hinterlegt ist.</td></tr>
+        <tr><td class="ph">{video_id}</td><td>ID des gerade laufenden Videos. Leer während eines Livestreams.</td></tr>
+        <tr><td class="ph">{titel}</td><td>Titel dessen, was gerade läuft</td></tr>
+        <tr><td class="ph">{sendung}</td><td>Name der laufenden Sendung</td></tr>
+        <tr><td class="ph">{titel_url}<br>{sendung_url}</td><td>Wie oben, aber URL-kodiert für eine Adresse</td></tr>
+        <tr><td class="ph">{zuschauer}</td><td>Wie viele gerade das Programm sehen</td></tr>
+        <tr><td class="ph">{uhrzeit}<br>{datum}</td><td>Aktuelle Uhrzeit / heutiges Datum</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </section>
+
+  <!-- 05 -->
+  <section id="iframes">
+    <h2><span class="num">05</span>Eingebettete Partnerseiten (iFrames)</h2>
+    <p>Steht in deiner Einblendung ein <code class="inl">&lt;iframe&gt;</code>, läuft er in einem abgeschotteten Rahmen. So versorgst du die Partnerseite mit der Zuschauer-Kennung — für Mitspiel-Quiz, Umfragen, Shop.</p>
+
+    <h3>Kennung übergeben</h3>
+    <p>Schreib <code class="inl">{uid}</code>, <code class="inl">{sig}</code> und <code class="inl">{name}</code> in die iFrame-Adresse (siehe Quiz-Beispiel oben). Beide Kennungswerte sind reines Hex und dürfen unverändert in eine URL. Zusätzlich meldet der Player die Kennung per <code class="inl">postMessage</code> an jeden erlaubten Rahmen:</p>
+    <figure class="code">
+      <figcaption>Empfang in der Partnerseite (JS)<button class="copy" data-copy="pm">Kopieren</button></figcaption>
+<pre id="pm"><span class="t">window</span>.addEventListener(<span class="s">"message"</span>, <span class="t">function</span>(e){
+  <span class="t">if</span> (e.data &amp;&amp; e.data.type === <span class="s">"kb-identity"</span>) {
+    <span class="c">// e.data = { type, quelle:"lixe", uid, name, sig }</span>
+    starteQuiz(e.data.uid, e.data.sig, e.data.name);
+  }
+});</pre>
+    </figure>
+
+    <div class="note warn"><b>Sicherheit / Freigabe:</b> <code class="inl">{uid}</code> und <code class="inl">{sig}</code> gehen NUR an Adressen, die im lixe-CMS unter <b>Partner → Integration → „Eingesetzt auf"</b> eingetragen sind. Nicht freigegebene Ziele bekommen die Kennung leer. Nenne uns also die genaue Origin (Schema + Host) deiner Einbettung.</div>
+
+    <h3>Kein Zugriff auf Cookies/Storage</h3>
+    <p>Der Rahmen ist ohne <code class="inl">allow-same-origin</code> sandboxed: die eingebettete Seite hat <b>keinen</b> Zugriff auf eigene Cookies, <code class="inl">localStorage</code> oder <code class="inl">sessionStorage</code>. Erkenne den Mitspieler über die <code class="inl">{uid}</code> in der URL bzw. per <code class="inl">postMessage</code> — nicht über eine eigene Sitzung. Erlaubt sind Skripte, Formulare und Pop-ups; durchgereicht werden <code class="inl">autoplay</code>, <code class="inl">fullscreen</code>, <code class="inl">clipboard-write</code>.</p>
+
+    <h3>{video_id} und Nachladen des Rahmens</h3>
+    <p><code class="inl">{video_id}</code> wird serverseitig fest ins HTML gesetzt. Solange dasselbe Video läuft, bleibt der Rahmen über die 2-Sekunden-Abfragen <b>unverändert</b> (kein Neuaufbau, laufendes Quiz läuft weiter). Erst beim <b>Videowechsel</b> ändert sich die ID und der Rahmen wird <b>einmal</b> neu geladen.</p>
+    <div class="note">Damit der Rahmen wirklich nur beim Videowechsel neu lädt, im selben Overlay <b>keine</b> ständig wechselnden Platzhalter wie <code class="inl">{uhrzeit}</code> oder <code class="inl">{zuschauer}</code> mischen.</div>
+  </section>
+
+  <!-- 06 -->
+  <section id="touch">
+    <h2><span class="num">06</span>Bedienbar vs. durchlässig</h2>
+    <p>Ob eine Einblendung Berührungen annimmt, entscheidet der Player <b>automatisch</b> am Inhalt:</p>
+    <ul>
+      <li><b>Bedienbar</b> (nimmt Tipps an): sobald ein <code class="inl">&lt;button&gt;</code>, <code class="inl">&lt;a href&gt;</code>, <code class="inl">&lt;form&gt;</code> oder <code class="inl">&lt;iframe&gt;</code> enthalten ist — z. B. Quiz, Shop-Knopf.</li>
+      <li><b>Durchlässig</b> (lässt Wischen &amp; Ton durch): reine Anzeige ohne Bedienelemente — auch wenn sie die volle Höhe nutzt. So bleiben Wischen und Stummschalten jederzeit erreichbar.</li>
+    </ul>
+  </section>
+
+  <!-- 07 -->
+  <section id="grenzen">
+    <h2><span class="num">07</span>Grenzen &amp; Tipps</h2>
+    <ul>
+      <li><b>Immer gegen 1080 gestalten</b> und Höhen mit <code class="inl">var(--ov-hoehe)</code> statt fester Pixel — sonst passt es nicht auf allen Geräten.</li>
+      <li><b>Ränder freihalten:</b> ~40 in der 1080-Einheit Abstand; der untere Streifen ist für Wischen/Ton reserviert.</li>
+      <li><b>Bewegung sparsam</b> und mit <code class="inl">@media (prefers-reduced-motion: reduce)</code> abschaltbar.</li>
+      <li><b>Kein Kauf-/Bezahlweg</b> in der App-Einblendung (Store-Regeln) — reine Anzeige/Info oder ausgelagerte Partnerseite.</li>
+      <li><b>Zum Testen:</b> Raster-Block aus §02 einfügen und live über dem Programm ansehen — alle neun Positionen auf einen Blick.</li>
+    </ul>
+  </section>
+
+  <footer>lixe · Einblendungen — Partner-Dokumentation · Bühne 1080 × var(--ov-hoehe) · Web/iOS/Android</footer>
+</div>
+
+<script>
+  var CSS={
+    tl:{t:"Oben links",d:"Ecke oben links, um --rand vom Rand.",c:".oben-links{ position:absolute;\n  top: var(--rand); left: var(--rand); }"},
+    tc:{t:"Oben mitte",d:"Mittig auf der oberen Kante.",c:".oben-mitte{ position:absolute; top: var(--rand);\n  left: 50%; transform: translateX(-50%); }"},
+    tr:{t:"Oben rechts",d:"Ecke oben rechts.",c:".oben-rechts{ position:absolute;\n  top: var(--rand); right: var(--rand); }"},
+    ml:{t:"Mitte links",d:"Vertikal zentriert, linke Kante.",c:".mitte-links{ position:absolute; left: var(--rand);\n  top: 50%; transform: translateY(-50%); }"},
+    mc:{t:"Mitte",d:"Zentrum der Fläche.",c:".mitte{ position:absolute; top: 50%; left: 50%;\n  transform: translate(-50%,-50%); }"},
+    mr:{t:"Mitte rechts",d:"Vertikal zentriert, rechte Kante.",c:".mitte-rechts{ position:absolute; right: var(--rand);\n  top: 50%; transform: translateY(-50%); }"},
+    bl:{t:"Unten links",d:"Ecke unten links — Ursprung.",c:".unten-links{ position:absolute;\n  bottom: var(--rand); left: var(--rand); }"},
+    bc:{t:"Unten mitte",d:"Mittig auf der unteren Kante — Bauchbinde.",c:".unten-mitte{ position:absolute; bottom: var(--rand);\n  left: 50%; transform: translateX(-50%); }"},
+    br:{t:"Unten rechts",d:"Ecke unten rechts.",c:".unten-rechts{ position:absolute;\n  bottom: var(--rand); right: var(--rand); }"}
+  };
+  function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+  var zones=document.querySelectorAll('.zone');
+  var dT=document.getElementById('d-title'),dD=document.getElementById('d-desc'),dC=document.getElementById('d-code');
+  zones.forEach(function(z){z.addEventListener('click',function(){
+    zones.forEach(function(o){o.classList.remove('active')});z.classList.add('active');
+    var i=CSS[z.dataset.pos];dT.textContent=i.t;dD.textContent=i.d;
+    dC.innerHTML='<pre style="border-radius:8px">'+esc(i.c)+'</pre>';
+  });});
+  document.querySelectorAll('.copy').forEach(function(b){b.addEventListener('click',function(){
+    var pre=document.getElementById(b.dataset.copy);if(!pre)return;
+    navigator.clipboard&&navigator.clipboard.writeText(pre.innerText).then(function(){
+      var o=b.textContent;b.textContent='Kopiert ✓';setTimeout(function(){b.textContent=o},1400);
+    });
+  });});
+</script>
+</body>
+</html>
