@@ -38,6 +38,10 @@ Kommt ohne externe Pakete aus (nur Node-Bordmittel).
 ## So funktioniert’s (kurz)
 
 1. `payload = base64url({ email, name, exp })`
+   `exp` ist **Pflicht**: Unix-Zeit, ab wann die Unterschrift nicht mehr gilt.
+   Kurz halten (die Beispiele hier nehmen 120 Sekunden) – ohne Ablauf ließe
+   sich eine einmal abgefangene Adresse beliebig oft einlösen. Fehlt `exp`,
+   antwortet lixe mit `422 ablauf_fehlt`.
 2. `sig = HMAC_SHA256(LIXE_SECRET_KEY, "sso:" + payload)` (hex)
 3. `POST {LIXE_APP_URL}/api/partner/session` mit `{ k: LIXE_EMBED_KEY, payload, sig }`
    → Antwort `{ token }`
