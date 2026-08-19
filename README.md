@@ -161,6 +161,37 @@ hast du zwei Möglichkeiten:
 
 ---
 
+## Kaufen aus einer Einblendung – alles bleibt im Player
+
+Eine Einblendung darf einen Kaufknopf haben (Teleshopping, Live-Shopping, Shop).
+Was dahinter liegt – Produktseite, Warenkorb, Kasse –, öffnet der Player als
+**eigene Ebene über seinem Bild**, genau auf der Player-Fläche. Es entsteht
+**kein zweites Browserfenster** und die Besucherin verlässt deine Seite nicht.
+In den lixe-Apps (iOS/Android) ist es dieselbe Ebene an derselben Stelle.
+
+**Was du dafür tun musst: nichts.** Ein gewöhnlicher Verweis reicht:
+
+```html
+<a class="knopf" href="https://shop.example.de/artikel/198308">Jetzt bestellen</a>
+```
+
+`target="_blank"` schadet nicht – der Player fängt es ab –, ist aber überflüssig.
+
+Bettest du ein **eigenes Widget als `<iframe>`** in die Einblendung ein und willst
+daraus etwas öffnen, sag es dem Player, statt selbst ein Fenster aufzumachen:
+
+```js
+parent.postMessage({ type: 'lixe-oeffnen', url: 'https://…/kasse' }, '*');
+```
+
+**Eine Grenze im Web:** Bezahldienste wie PayPal verbieten grundsätzlich, ihre
+Anmeldeseite in einen fremden Rahmen zu legen (`X-Frame-Options`). Im Browser
+bekommt die Kauf-Ebene deshalb oben rechts einen Knopf **↗**, der genau diesen
+letzten Schritt in ein eigenes Fenster gibt. Alles davor – und in den Apps auch
+die Anmeldung selbst – bleibt im Player.
+
+---
+
 ## Schnellstart
 
 1. **Nur ausprobieren:** [`index.html`](index.html) öffnen (oder über GitHub Pages)

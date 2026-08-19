@@ -144,7 +144,8 @@
     <a href="#platzhalter"><span class="n">04</span> Platzhalter</a>
     <a href="#iframes"><span class="n">05</span> Eingebettete Seiten</a>
     <a href="#touch"><span class="n">06</span> Bedienbar vs. durchlässig</a>
-    <a href="#grenzen"><span class="n">07</span> Grenzen &amp; Tipps</a>
+    <a href="#kaufen"><span class="n">07</span> Kaufen im Player</a>
+    <a href="#grenzen"><span class="n">08</span> Grenzen &amp; Tipps</a>
   </nav>
 
   <!-- 01 -->
@@ -337,13 +338,39 @@
   </section>
 
   <!-- 07 -->
+  <!-- 07 -->
+  <section id="kaufen">
+    <h2><span class="num">07</span>Kaufen im Player</h2>
+    <p>Eine Einblendung darf einen Kaufknopf haben. Was dahinter liegt — Produktseite, Warenkorb, Kasse — öffnet der Player als <b>eigene Ebene über seinem Bild</b>, genau auf der Player-Fläche. Es entsteht <b>kein zweites Browserfenster</b>, und wer zusieht, verlässt weder deine Seite noch den Player. In den Apps ist es dieselbe Ebene an derselben Stelle.</p>
+
+    <h3>Was du dafür tun musst</h3>
+    <p>Nichts. Ein gewöhnlicher Verweis genügt — der Player fängt ihn ab:</p>
+    <figure class="code">
+      <figcaption><span>Kaufknopf in der Einblendung</span></figcaption>
+      <pre>&lt;<span class="t">a</span> <span class="a">class</span>=<span class="s">"knopf"</span> <span class="a">href</span>=<span class="s">"https://shop.example.de/artikel/198308"</span>&gt;
+  Jetzt bestellen
+&lt;/<span class="t">a</span>&gt;</pre>
+    </figure>
+    <p><code class="inl">target="_blank"</code> schadet nicht, ist aber überflüssig. Dasselbe gilt für <code class="inl">window.open(…)</code> aus einem Widget-Skript in der Einblendung: Der Player nimmt die Adresse und zeigt sie bei sich.</p>
+
+    <h3>Aus einem eingebetteten Rahmen heraus</h3>
+    <p>Bettest du ein eigenes Widget als <code class="inl">&lt;iframe&gt;</code> ein und willst daraus etwas öffnen, sag es dem Player, statt selbst ein Fenster aufzumachen:</p>
+    <figure class="code">
+      <figcaption><span>Im eingebetteten Rahmen</span></figcaption>
+      <pre><span class="t">parent</span>.postMessage({ <span class="a">type</span>: <span class="s">'lixe-oeffnen'</span>, <span class="a">url</span>: <span class="s">'https://…/kasse'</span> }, <span class="s">'*'</span>);</pre>
+    </figure>
+
+    <div class="note warn"><b>Grenze im Web:</b> Bezahldienste wie PayPal verbieten grundsätzlich, ihre Anmeldeseite in einen fremden Rahmen zu legen (<code class="inl">X-Frame-Options</code>). Im Browser hat die Kauf-Ebene deshalb oben einen Knopf <b>↗</b>, der genau diesen letzten Schritt in ein eigenes Fenster gibt. Alles davor — und in den Apps auch die Anmeldung selbst — bleibt im Player. Lege deshalb Produktseite, Warenkorb und Adressen auf deine eigene Domain; nur der Bezahldienst selbst braucht am Ende sein Fenster.</div>
+  </section>
+
+  <!-- 08 -->
   <section id="grenzen">
-    <h2><span class="num">07</span>Grenzen &amp; Tipps</h2>
+    <h2><span class="num">08</span>Grenzen &amp; Tipps</h2>
     <ul>
       <li><b>Immer gegen 1080 gestalten</b> und Höhen mit <code class="inl">var(--ov-hoehe)</code> statt fester Pixel — sonst passt es nicht auf allen Geräten.</li>
       <li><b>Ränder freihalten:</b> ~40 in der 1080-Einheit Abstand; der untere Streifen ist für Wischen/Ton reserviert.</li>
       <li><b>Bewegung sparsam</b> und mit <code class="inl">@media (prefers-reduced-motion: reduce)</code> abschaltbar.</li>
-      <li><b>Kein Kauf-/Bezahlweg</b> in der App-Einblendung (Store-Regeln) — reine Anzeige/Info oder ausgelagerte Partnerseite.</li>
+      <li><b>Digitale Güter</b> (Abos, Freischaltungen) nicht per eigenem Bezahlweg in den Apps verkaufen — das verlangen die Store-Regeln über die App-Bezahlung. <b>Ware und Dienstleistung</b> (Teleshopping, Tickets) dürfen den Kaufweg aus §07 benutzen.</li>
       <li><b>Zum Testen:</b> Raster-Block aus §02 einfügen und live über dem Programm ansehen — alle neun Positionen auf einen Blick.</li>
     </ul>
   </section>

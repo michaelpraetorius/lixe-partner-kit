@@ -133,7 +133,7 @@
     var APP = (CFG.appUrl || 'https://app.lixe.de').replace(/\/+$/, '');
     var DEMO_KEY = CFG.embedKey || '';
     var LS = 'lixe_kit_key';
-    var KIT_VERSION = '2026.08.19-6';
+    var KIT_VERSION = '2026.08.19-7';
 
     var $ = function (id) { return document.getElementById(id); };
 
@@ -178,7 +178,10 @@
         iframe.src = APP + '/einbetten/app?k=' + encodeURIComponent(key)
             + (o.content ? '&content=' + encodeURIComponent(o.content) : '')
             + (o.nav ? '&nav=1' : '');
-        iframe.setAttribute('allow', 'autoplay; fullscreen; picture-in-picture; encrypted-media');
+        // payment/clipboard-write durchreichen: Ein Kauf aus einer Einblendung wird
+    // IM Player geöffnet (eigene Ebene, kein zweites Fenster) - ohne diese
+    // Rechte kaeme die Bezahlseite darin nicht an die Bezahl-Schnittstelle.
+    iframe.setAttribute('allow', 'payment; clipboard-write; autoplay; fullscreen; picture-in-picture; encrypted-media');
         iframe.setAttribute('allowfullscreen', '');
         iframe.setAttribute('title', 'lixe Player');
         iframe.setAttribute('sandbox', 'allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox allow-forms');
