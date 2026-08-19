@@ -164,10 +164,15 @@ hast du zwei Möglichkeiten:
 ## Kaufen aus einer Einblendung – alles bleibt im Player
 
 Eine Einblendung darf einen Kaufknopf haben (Teleshopping, Live-Shopping, Shop).
-Was dahinter liegt – Produktseite, Warenkorb, Kasse –, öffnet der Player als
-**eigene Ebene über seinem Bild**, genau auf der Player-Fläche. Es entsteht
-**kein zweites Browserfenster** und die Besucherin verlässt deine Seite nicht.
-In den lixe-Apps (iOS/Android) ist es dieselbe Ebene an derselben Stelle.
+Was dahinter liegt, zeigt der Player nach **einer Regel**:
+
+- **Seiten von lixe** (Produktseite, Warenkorb, Kasse) legt er als **eigene Ebene
+  über sein Bild** – kein zweites Fenster, deine Seite bleibt stehen.
+- **Fremde Seiten** – vor allem **Bezahldienste** – öffnet er in einem **eigenen
+  Fenster**. Das ist kein Rückschritt, sondern Vorschrift der Anbieter: PayPal
+  und Co. verbieten das Einbetten in fremde Rahmen (Schutz vor Clickjacking);
+  PayPals eigenes SDK arbeitet genauso. Der Player bleibt dabei offen, und nach
+  dem Bezahlen landet die Besucherin wieder bei dir.
 
 **Was du dafür tun musst: nichts.** Ein gewöhnlicher Verweis reicht:
 

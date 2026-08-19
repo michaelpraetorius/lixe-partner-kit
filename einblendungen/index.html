@@ -376,7 +376,7 @@
       <pre><span class="t">parent</span>.postMessage({ <span class="a">type</span>: <span class="s">'lixe-oeffnen'</span>, <span class="a">url</span>: <span class="s">'https://…/kasse'</span> }, <span class="s">'*'</span>);</pre>
     </figure>
 
-    <div class="note warn"><b>Grenze im Web:</b> Bezahldienste wie PayPal verbieten grundsätzlich, ihre Anmeldeseite in einen fremden Rahmen zu legen (<code class="inl">X-Frame-Options</code>). Im Browser hat die Kauf-Ebene deshalb oben einen Knopf <b>↗</b>, der genau diesen letzten Schritt in ein eigenes Fenster gibt. Alles davor — und in den Apps auch die Anmeldung selbst — bleibt im Player. Lege deshalb Produktseite, Warenkorb und Adressen auf deine eigene Domain; nur der Bezahldienst selbst braucht am Ende sein Fenster.</div>
+    <div class="note"><b>Zwei Wege, eine Regel:</b> Seiten von lixe zeigt der Player als Ebene über seinem Bild. <b>Fremde Seiten öffnet er in einem eigenen Fenster</b> — das ist bei Bezahldiensten keine Wahl, sondern deren Vorschrift: PayPal und Co. verbieten das Einbetten in fremde Rahmen (Schutz vor Clickjacking), PayPals eigenes SDK arbeitet ebenso. Der Player bleibt offen; nach dem Bezahlen ist die Besucherin wieder da. Wichtig für dich: Das Fenster geht nur auf, wenn der Tipp <b>synchron</b> bleibt — lege also alles Langsame (Bestellung anlegen) VOR den Kaufknopf, nicht hinein.</div>
   </section>
 
   <!-- 08 -->
