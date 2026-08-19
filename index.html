@@ -133,7 +133,7 @@
     var APP = (CFG.appUrl || 'https://app.lixe.de').replace(/\/+$/, '');
     var DEMO_KEY = CFG.embedKey || '';
     var LS = 'lixe_kit_key';
-    var KIT_VERSION = '2026.08.19-4';
+    var KIT_VERSION = '2026.08.19-5';
 
     var $ = function (id) { return document.getElementById(id); };
 
@@ -154,7 +154,7 @@
         if (typ === 'video') { content = 'video:' + id; }
         else if (typ === 'playlist') { content = 'playlist:' + id; }
         else if (typ === 'programm') {
-            // Programm aus der Kanal-Liste wählen; „Andere ID/Slug" nutzt das
+            // Programm aus der Kanal-Liste wählen; „Andere Kanal-ID" nutzt das
             // Textfeld. Standardkanal = leer → 'programm', sonst 'channel:<slug|id>'.
             var ch = $('ch').value;
             if (ch === '__custom__') { content = id ? ('channel:' + id) : 'programm'; }
@@ -194,7 +194,7 @@
 
     // Zeigt je nach Auswahl das passende Zusatzfeld: die Kanal-Liste beim
     // Programm, sonst das ID-Feld (Video/Sammlung immer, Livestream = Stream-ID,
-    // Programm nur bei „Andere ID/Slug").
+    // Programm nur bei „Andere Kanal-ID").
     function felderAktualisieren() {
         var typ = $('content').value, istProgramm = (typ === 'programm');
         $('chWrap').style.display = istProgramm ? '' : 'none';
@@ -202,14 +202,14 @@
         var eigeneId = istProgramm && $('ch').value === '__custom__';
         $('idWrap').style.display = (typ === 'video' || typ === 'playlist' || typ === 'live' || eigeneId) ? '' : 'none';
         $('idLabel').textContent = typ === 'live' ? 'Stream-ID (leer = Standard)'
-            : istProgramm ? 'Kanal-ID oder Slug' : 'ID';
+            : istProgramm ? 'Kanal-ID' : 'ID';
         $('cid').placeholder = typ === 'video' ? 'z. B. 1213029648'
             : typ === 'playlist' ? 'z. B. 22'
             : typ === 'live' ? 'z. B. 7' : 'z. B. 3';
     }
 
     // Kanal-Liste EINMAL vom Backend holen (öffentliche Kanäle, CORS offen). Bei
-    // Fehlern bleibt „Standardkanal" + „Andere ID/Slug" – Auswahl per Hand geht immer.
+    // Fehlern bleibt „Standardkanal" + „Andere Kanal-ID" – Auswahl per Hand geht immer.
     var kanaeleGeladen = false;
     function kanaeleLaden() {
         if (kanaeleGeladen) { return; }
@@ -221,15 +221,15 @@
                 sel.innerHTML = '';
                 sel.appendChild(new Option('Standardkanal', ''));
                 ((d && d.channels) || []).forEach(function (c) {
-                    sel.appendChild(new Option(c.name + (c.access === 'paid' ? ' (Abo)' : ''), c.slug || String(c.id)));
+                    sel.appendChild(new Option(c.name + ' (ID ' + c.id + ')' + (c.access === 'paid' ? ' · Abo' : ''), String(c.id)));
                 });
-                sel.appendChild(new Option('Andere ID/Slug eintragen…', '__custom__'));
+                sel.appendChild(new Option('Andere Kanal-ID eintragen…', '__custom__'));
                 sel.value = aktiv;
                 felderAktualisieren(); aktualisieren();
             })
             .catch(function () {
                 var sel = $('ch');
-                if (sel.options.length < 2) { sel.appendChild(new Option('Andere ID/Slug eintragen…', '__custom__')); }
+                if (sel.options.length < 2) { sel.appendChild(new Option('Andere Kanal-ID eintragen…', '__custom__')); }
             });
     }
 
