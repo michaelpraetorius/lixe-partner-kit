@@ -94,29 +94,20 @@
                 <div style="margin-top:14px">
                     <button class="primary" id="btnPreview">Vorschau aktualisieren</button>
                 </div>
-            </div>
 
-            <div class="card">
-                <h2>Einbinden des Players</h2>
-                <p>Diese eine Zeile an die Stelle deiner Seite, wo der Player erscheinen soll:</p>
+                <label style="margin-top:20px">Einbett-Code</label>
+                <p class="hint" style="margin:0 0 6px">An die Stelle deiner Seite, wo der Player erscheinen soll:</p>
                 <pre><code id="snippet"></code></pre>
                 <button class="ghost" id="btnCopy" style="margin-top:10px">Code kopieren</button>
-                <div class="warn">
-                    Trage die Domain, auf der du einbettest, im Partner-Portal ein – sonst zeigt der Browser
-                    den Rahmen nicht an. <code>data-content</code> wählt ein festes Ziel:
-                    <code>video:ID</code>, <code>playlist:ID</code>, <code>channel:ID|Slug</code> (bestimmtes
-                    Programm), <code>stream:ID</code> (bestimmter Livestream), <code>programm</code> oder
-                    <code>live</code> (Standardkanal) – leer = Startseite.
-                </div>
+                <div class="warn">Trage die Domain im Partner-Portal ein – sonst blockiert der Browser den Rahmen.</div>
             </div>
 
             <div class="card">
-                <h2>Nahtlose Integration mit SSO</h2>
-                <p>Wenn deine Besucher:innen bei dir schon eingeloggt sind, meldet lixe sie automatisch mit an –
-                    ohne zweiten Login. Dein Server unterschreibt die Person mit dem geheimen Schlüssel, lixe gibt
-                    dafür ein Token für den Player zurück.</p>
+                <h2>Integration mit SSO</h2>
+                <p>Sind deine Besucher:innen bei dir schon eingeloggt, meldet lixe sie automatisch mit an –
+                    ohne zweiten Login (dein Server unterschreibt, lixe gibt ein Token zurück).</p>
                 <a href="https://github.com/michaelpraetorius/lixe-partner-kit/tree/main/variante-b-sso">
-                    Zur Doku (PHP- &amp; Node-Beispiel) →</a>
+                    Beispiel &amp; Doku ansehen (PHP + Node) →</a>
             </div>
         </section>
 
@@ -142,7 +133,7 @@
     var APP = (CFG.appUrl || 'https://app.lixe.de').replace(/\/+$/, '');
     var DEMO_KEY = CFG.embedKey || '';
     var LS = 'lixe_kit_key';
-    var KIT_VERSION = '2026.08.19-3';
+    var KIT_VERSION = '2026.08.19-4';
 
     var $ = function (id) { return document.getElementById(id); };
 
