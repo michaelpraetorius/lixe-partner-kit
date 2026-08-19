@@ -7,12 +7,13 @@
  * Der Schlüssel darf offen hier stehen – er ist kein Geheimnis. Der Schutz sitzt
  * in der Domain-Liste im lixe-CMS ("Eingesetzt auf"), nicht in der Geheimhaltung.
  *
- * Voreingestellt ist der Schlüssel des Plattform-Partners "GitHub (Demo)", damit
- * die Vorschau auf GitHub Pages sofort läuft. Für deinen Einsatz ersetzt du ihn
- * durch deinen eigenen.
+ * BEWUSST LEER: Es ist KEIN Schlüssel voreingestellt. Damit zeigt die
+ * öffentliche Demo-Seite von sich aus KEINE lixe-Inhalte – die Live-Vorschau
+ * läuft erst, wenn du hier (oder im Feld auf der Seite) deinen eigenen
+ * emb_-Schlüssel einträgst. So werden über die Demo keine Inhalte ungewollt frei.
  */
 window.LIXE = {
     appUrl:   'https://app.lixe.de',
-    embedKey: 'emb_ghdemo_c1a9f3e7b5d24680a1b2c3d4e5f60718',
+    embedKey: '',   // dein öffentlicher Einbett-Schlüssel (emb_…) aus dem lixe-CMS
     format:   '9:16'   // '9:16' (Hochkant) oder '16:9' (Quer)
 };

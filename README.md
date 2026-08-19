@@ -33,9 +33,10 @@ https://<dein-github-name>.github.io/lixe-partner-kit/
 
 Das ist zugleich ein **echter Cross-Origin-Test**: Die Pages-Domain ist eine andere
 als `app.lixe.de` – genau die Situation, die auch auf einer Partner-Website
-herrscht. Voreingestellt ist der Schlüssel des Demo-Partners „GitHub (Demo)“, dessen
-Domain-Liste die `github.io`-Adresse schon enthält. Für deinen Einsatz trägst du in
-[`config.js`](config.js) deinen eigenen Schlüssel ein.
+herrscht. **Es ist bewusst kein Schlüssel voreingestellt** – so zeigt die öffentliche
+Demo von sich aus keine lixe-Inhalte. Die Live-Vorschau läuft erst, wenn du in
+[`config.js`](config.js) (oder im Feld auf der Seite) deinen eigenen öffentlichen
+Einbett-Schlüssel (`emb_…`) aus dem lixe-CMS einträgst.
 
 > Auf GitHub Pages läuft nur **Variante A** (statisch). **Variante B (SSO)** braucht
 > einen Server, der PHP oder Node ausführt – Pages kann das nicht.
