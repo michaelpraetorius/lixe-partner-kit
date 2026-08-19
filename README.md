@@ -177,6 +177,20 @@ In den lixe-Apps (iOS/Android) ist es dieselbe Ebene an derselben Stelle.
 
 `target="_blank"` schadet nicht – der Player fängt es ab –, ist aber überflüssig.
 
+Hat dein Widget einen **eigenen Bezahlschritt**, zeichne ihn nicht selbst — die
+Einblendungs-Ebene ist nur so hoch wie ihr Inhalt und am unteren Rand verankert,
+dein Rahmen darin würde oben abgeschnitten. Gib ihn dem Player:
+
+```js
+// In jeder Einblendung vorhanden – Web, iOS und Android.
+window.lixePlayer.checkoutOpen({
+    url:       'https://…/bezahlen',
+    returnUrl: 'https://…/danke',     // hier ist der Weg zu Ende
+    cancelUrl: 'https://…/abbruch'
+});
+window.lixePlayer.onResult = function (status) { /* 'paid' | 'cancelled' | 'closed' */ };
+```
+
 Bettest du ein **eigenes Widget als `<iframe>`** in die Einblendung ein und willst
 daraus etwas öffnen, sag es dem Player, statt selbst ein Fenster aufzumachen:
 

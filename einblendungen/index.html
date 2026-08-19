@@ -353,6 +353,22 @@
     </figure>
     <p><code class="inl">target="_blank"</code> schadet nicht, ist aber überflüssig. Dasselbe gilt für <code class="inl">window.open(…)</code> aus einem Widget-Skript in der Einblendung: Der Player nimmt die Adresse und zeigt sie bei sich.</p>
 
+    <h3>Ein eigener Bezahlschritt</h3>
+    <p>Hat dein Widget eine Seite, die <b>groß und deckend</b> gezeigt werden muss (eine Bezahlseite), zeichne sie nicht selbst — die Einblendungs-Ebene ist nur so hoch wie ihr Inhalt und am unteren Rand verankert, dein Rahmen darin würde <b>oben abgeschnitten</b>. Gib sie stattdessen dem Player:</p>
+    <figure class="code">
+      <figcaption><span>Im Skript der Einblendung</span></figcaption>
+      <pre><span class="c">// In jeder Einblendung vorhanden - Web, iOS und Android.</span>
+<span class="t">window</span>.lixePlayer.checkoutOpen({
+  <span class="a">url</span>:       <span class="s">'https://…/bezahlen'</span>,
+  <span class="a">returnUrl</span>: <span class="s">'https://…/danke'</span>,   <span class="c">// hier ist der Weg zu Ende</span>
+  <span class="a">cancelUrl</span>: <span class="s">'https://…/abbruch'</span>
+});
+<span class="t">window</span>.lixePlayer.onResult = <span class="t">function</span> (status) {
+  <span class="c">// 'paid' | 'cancelled' | 'closed'</span>
+};</pre>
+    </figure>
+    <p>Der Player legt die Seite über sein Bild, erkennt an <code class="inl">returnUrl</code>/<code class="inl">cancelUrl</code> das Ende und schließt von selbst.</p>
+
     <h3>Aus einem eingebetteten Rahmen heraus</h3>
     <p>Bettest du ein eigenes Widget als <code class="inl">&lt;iframe&gt;</code> ein und willst daraus etwas öffnen, sag es dem Player, statt selbst ein Fenster aufzumachen:</p>
     <figure class="code">
