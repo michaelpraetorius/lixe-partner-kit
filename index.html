@@ -55,7 +55,7 @@
 <body>
 <div class="wrap">
     <header>
-        <span class="badge">lixe Integration</span>
+        <span class="badge">Partner-Kit</span>
         <h1 style="margin-top:12px">lixe Integration</h1>
         <p class="lead">So bindest du die Plattform lixe.de ein.</p>
     </header>
@@ -142,15 +142,22 @@
     var APP = (CFG.appUrl || 'https://app.lixe.de').replace(/\/+$/, '');
     var DEMO_KEY = CFG.embedKey || '';
     var LS = 'lixe_kit_key';
-    var KIT_VERSION = '2026.08.19-2';
+    var KIT_VERSION = '2026.08.19-3';
 
     var $ = function (id) { return document.getElementById(id); };
 
     function aktKey() { try { return window.localStorage.getItem(LS) || DEMO_KEY; } catch (e) { return DEMO_KEY; } }
 
+    // Man soll nur den WERT eintragen (z. B. die Kanal-ID 3). Tippt jemand das
+    // Präfix trotzdem mit („channel:3"), schneiden wir es hier weg – sonst
+    // entstünde „channel:channel:3" und der Player fiele auf den Standardkanal
+    // zurück (das war der Fehler: channel:3 → Kanal 1).
+    function nurId(s) {
+        return (s || '').trim().replace(/^(channel|kanal|stream|live|video|beitrag|playlist|sammlung)\s*:\s*/i, '');
+    }
     // Gewählte Optionen aus den Bedienelementen → data-content / data-nav.
     function opts() {
-        var typ = $('content').value, id = ($('cid').value || '').trim(), content = '';
+        var typ = $('content').value, id = nurId($('cid').value), content = '';
         // Video/Sammlung: Typ auch OHNE ID mitgeben (video:/playlist:) – dann zeigt
         // der Player eine klare Meldung („kein Video ausgewählt") statt der Startseite.
         if (typ === 'video') { content = 'video:' + id; }
@@ -207,7 +214,7 @@
             : istProgramm ? 'Kanal-ID oder Slug' : 'ID';
         $('cid').placeholder = typ === 'video' ? 'z. B. 1213029648'
             : typ === 'playlist' ? 'z. B. 22'
-            : typ === 'live' ? 'z. B. 7' : 'z. B. sport';
+            : typ === 'live' ? 'z. B. 7' : 'z. B. 3';
     }
 
     // Kanal-Liste EINMAL vom Backend holen (öffentliche Kanäle, CORS offen). Bei
