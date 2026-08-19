@@ -71,14 +71,19 @@
                 <label for="content">Was soll der Player zeigen?</label>
                 <select id="content">
                     <option value="">Startseite (Standard)</option>
-                    <option value="video">Einzelnes Video (Video-ID)</option>
-                    <option value="playlist">Sammlung (Sammlung-ID)</option>
+                    <option value="video">Einzelnes Video</option>
+                    <option value="playlist">Sammlung</option>
+                    <option value="programm">Programm (Kanal)</option>
                     <option value="live">Livestream</option>
-                    <option value="programm">Programm</option>
                 </select>
 
+                <div id="chWrap" style="display:none">
+                    <label for="ch">Welches Programm?</label>
+                    <select id="ch"><option value="">Standardkanal</option></select>
+                </div>
+
                 <div id="idWrap" style="display:none">
-                    <label for="cid">ID</label>
+                    <label for="cid" id="idLabel">ID</label>
                     <input id="cid" type="text" placeholder="z. B. 1213029648 (Video) oder 22 (Sammlung)" autocomplete="off" spellcheck="false">
                 </div>
 
@@ -98,9 +103,10 @@
                 <button class="ghost" id="btnCopy" style="margin-top:10px">Code kopieren</button>
                 <div class="warn">
                     Trage die Domain, auf der du einbettest, im Partner-Portal ein – sonst zeigt der Browser
-                    den Rahmen nicht an. Optional: <code>data-content="playlist:ID"</code>,
-                    <code>video:ID</code>, <code>live</code> oder <code>programm</code> wählt ein festes Ziel
-                    (leer = Startseite).
+                    den Rahmen nicht an. <code>data-content</code> wählt ein festes Ziel:
+                    <code>video:ID</code>, <code>playlist:ID</code>, <code>channel:ID|Slug</code> (bestimmtes
+                    Programm), <code>stream:ID</code> (bestimmter Livestream), <code>programm</code> oder
+                    <code>live</code> (Standardkanal) – leer = Startseite.
                 </div>
             </div>
 
@@ -136,7 +142,7 @@
     var APP = (CFG.appUrl || 'https://app.lixe.de').replace(/\/+$/, '');
     var DEMO_KEY = CFG.embedKey || '';
     var LS = 'lixe_kit_key';
-    var KIT_VERSION = '2026.08.04-07';
+    var KIT_VERSION = '2026.08.19-1';
 
     var $ = function (id) { return document.getElementById(id); };
 
@@ -145,12 +151,19 @@
     // Gewählte Optionen aus den Bedienelementen → data-content / data-nav.
     function opts() {
         var typ = $('content').value, id = ($('cid').value || '').trim(), content = '';
-        // Typ auch OHNE ID mitgeben (video:/playlist:) – dann zeigt der Player
-        // eine klare Meldung („kein Video ausgewählt") statt stumm die Startseite.
+        // Video/Sammlung: Typ auch OHNE ID mitgeben (video:/playlist:) – dann zeigt
+        // der Player eine klare Meldung („kein Video ausgewählt") statt der Startseite.
         if (typ === 'video') { content = 'video:' + id; }
         else if (typ === 'playlist') { content = 'playlist:' + id; }
-        else if (typ === 'live') { content = 'live'; }
-        else if (typ === 'programm') { content = 'programm'; }
+        else if (typ === 'programm') {
+            // Programm aus der Kanal-Liste wählen; „Andere ID/Slug" nutzt das
+            // Textfeld. Standardkanal = leer → 'programm', sonst 'channel:<slug|id>'.
+            var ch = $('ch').value;
+            if (ch === '__custom__') { content = id ? ('channel:' + id) : 'programm'; }
+            else if (ch) { content = 'channel:' + ch; }
+            else { content = 'programm'; }
+        }
+        else if (typ === 'live') { content = id ? ('stream:' + id) : 'live'; }
         return { content: content, nav: $('nav').checked };
     }
     function snippet(key, o) {
@@ -181,12 +194,50 @@
         baueVorschau(key, o);
     }
 
+    // Zeigt je nach Auswahl das passende Zusatzfeld: die Kanal-Liste beim
+    // Programm, sonst das ID-Feld (Video/Sammlung immer, Livestream = Stream-ID,
+    // Programm nur bei „Andere ID/Slug").
+    function felderAktualisieren() {
+        var typ = $('content').value, istProgramm = (typ === 'programm');
+        $('chWrap').style.display = istProgramm ? '' : 'none';
+        if (istProgramm) { kanaeleLaden(); }
+        var eigeneId = istProgramm && $('ch').value === '__custom__';
+        $('idWrap').style.display = (typ === 'video' || typ === 'playlist' || typ === 'live' || eigeneId) ? '' : 'none';
+        $('idLabel').textContent = typ === 'live' ? 'Stream-ID (leer = Standard)'
+            : istProgramm ? 'Kanal-ID oder Slug' : 'ID';
+        $('cid').placeholder = typ === 'video' ? 'z. B. 1213029648'
+            : typ === 'playlist' ? 'z. B. 22'
+            : typ === 'live' ? 'z. B. 7' : 'z. B. sport';
+    }
+
+    // Kanal-Liste EINMAL vom Backend holen (öffentliche Kanäle, CORS offen). Bei
+    // Fehlern bleibt „Standardkanal" + „Andere ID/Slug" – Auswahl per Hand geht immer.
+    var kanaeleGeladen = false;
+    function kanaeleLaden() {
+        if (kanaeleGeladen) { return; }
+        kanaeleGeladen = true;
+        fetch(APP + '/api/channels', { cache: 'no-store' })
+            .then(function (r) { return r.ok ? r.json() : null; })
+            .then(function (d) {
+                var sel = $('ch'), aktiv = sel.value;
+                sel.innerHTML = '';
+                sel.appendChild(new Option('Standardkanal', ''));
+                ((d && d.channels) || []).forEach(function (c) {
+                    sel.appendChild(new Option(c.name + (c.access === 'paid' ? ' (Abo)' : ''), c.slug || String(c.id)));
+                });
+                sel.appendChild(new Option('Andere ID/Slug eintragen…', '__custom__'));
+                sel.value = aktiv;
+                felderAktualisieren(); aktualisieren();
+            })
+            .catch(function () {
+                var sel = $('ch');
+                if (sel.options.length < 2) { sel.appendChild(new Option('Andere ID/Slug eintragen…', '__custom__')); }
+            });
+    }
+
     $('btnPreview').addEventListener('click', aktualisieren);
-    $('content').addEventListener('change', function () {
-        var typ = $('content').value;
-        $('idWrap').style.display = (typ === 'video' || typ === 'playlist') ? '' : 'none';
-        aktualisieren();
-    });
+    $('content').addEventListener('change', function () { felderAktualisieren(); aktualisieren(); });
+    $('ch').addEventListener('change', function () { felderAktualisieren(); aktualisieren(); });
     $('cid').addEventListener('input', aktualisieren);
     $('nav').addEventListener('change', aktualisieren);
     $('btnCopy').addEventListener('click', function () {
@@ -219,6 +270,7 @@
 
     // Start
     $('key').value = aktKey();
+    felderAktualisieren();
     aktualisieren();
 })();
 </script>
