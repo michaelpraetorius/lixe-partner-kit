@@ -103,6 +103,13 @@
             </div>
 
             <div class="card">
+                <h2>Einbindung in eine bestehende App</h2>
+                <p>Du hast schon eine App (iOS/Android)? Dann musst du sie nicht ersetzen – lixe kommt als
+                    Schicht dazu: vom Web-Rahmen in einer WebView bis zum vollen Player.</p>
+                <a href="app-einbindung/">Die drei Wege ansehen &rarr;</a>
+            </div>
+
+            <div class="card">
                 <h2>Integration mit SSO</h2>
                 <p>Sind deine Besucher:innen bei dir schon eingeloggt, meldet lixe sie automatisch mit an –
                     ohne zweiten Login (dein Server unterschreibt, lixe gibt ein Token zurück).</p>
@@ -133,7 +140,7 @@
     var APP = (CFG.appUrl || 'https://app.lixe.de').replace(/\/+$/, '');
     var DEMO_KEY = CFG.embedKey || '';
     var LS = 'lixe_kit_key';
-    var KIT_VERSION = '2026.08.19-9';
+    var KIT_VERSION = '2026.08.24-1';
 
     var $ = function (id) { return document.getElementById(id); };
 

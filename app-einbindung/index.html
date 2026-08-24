@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>App-Einbindung — Partner-Dokumentation · lixe</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  :root{
+    --bg:#eef1f4; --panel:#ffffff; --ink:#141922; --ink-soft:#4a5568;
+    --line:#d3d9e0; --line-strong:#b7c0cb;
+    --accent:#b07d1e; --accent-ink:#7a5410; --reserve:#c2543c; --ok:#2f7d5d;
+    --stage:#1a2230; --stage-line:rgba(255,255,255,.16); --stage-ink:#e7ecf3;
+    --code-bg:#0f141c; --code-ink:#e7ecf3;
+    --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+    --sans:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  }
+  @media (prefers-color-scheme:dark){
+    :root:not([data-theme="light"]){
+      --bg:#0e1116; --panel:#151b24; --ink:#eef1f5; --ink-soft:#9aa6b4;
+      --line:#252d38; --line-strong:#37414f;
+      --accent:#e0a94e; --accent-ink:#f0c886; --reserve:#d8664c; --ok:#63c298;
+      --stage:#0a0e14; --code-bg:#0a0e14;
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#0e1116; --panel:#151b24; --ink:#eef1f5; --ink-soft:#9aa6b4;
+    --line:#252d38; --line-strong:#37414f;
+    --accent:#e0a94e; --accent-ink:#f0c886; --reserve:#d8664c; --ok:#63c298;
+    --stage:#0a0e14; --code-bg:#0a0e14;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.6;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1080px;margin:0 auto;padding:44px 24px 90px}
+  a{color:var(--accent-ink)}
+  code.inl{font-family:var(--mono);font-size:.88em;background:color-mix(in srgb,var(--line) 55%,transparent);padding:1px 5px;border-radius:4px}
+
+  header.top{margin-bottom:14px}
+  .eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--accent-ink);margin:0 0 12px}
+  h1{font-size:clamp(30px,5vw,44px);line-height:1.08;margin:0 0 12px;letter-spacing:-.02em;text-wrap:balance;font-weight:800}
+  .lede{font-size:18px;color:var(--ink-soft);max-width:65ch;margin:0}
+  .platforms{display:flex;gap:8px;flex-wrap:wrap;margin:20px 0 0}
+  .pill{font-family:var(--mono);font-size:12px;letter-spacing:.04em;border:1px solid var(--line-strong);border-radius:999px;padding:5px 12px;color:var(--ink-soft)}
+  .pill b{color:var(--accent-ink);font-weight:600}
+
+  nav.toc{display:flex;flex-wrap:wrap;gap:8px 18px;margin:28px 0 40px;padding:16px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+  nav.toc a{font-family:var(--mono);font-size:13px;color:var(--ink-soft);text-decoration:none}
+  nav.toc a:hover{color:var(--accent-ink)}
+  nav.toc .n{color:var(--accent-ink)}
+
+  section{margin:0 0 52px;scroll-margin-top:20px}
+  h2{font-size:26px;margin:0 0 16px;letter-spacing:-.01em;font-weight:750;display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+  h2 .num{font-family:var(--mono);font-size:15px;color:var(--accent-ink);font-weight:600}
+  h3{font-size:17px;margin:26px 0 10px;font-weight:700}
+  p{margin:0 0 14px;max-width:66ch}
+  ul{max-width:66ch;padding-left:1.1em}
+  li{margin:6px 0}
+
+  /* Status-Kennzeichnung: was heute läuft, was Entwurf ist */
+  .status{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;
+    border-radius:999px;padding:3px 10px;border:1px solid var(--line-strong);color:var(--ink-soft);font-weight:600;white-space:nowrap}
+  .status.live{color:var(--ok);border-color:color-mix(in srgb,var(--ok) 55%,transparent);background:color-mix(in srgb,var(--ok) 10%,transparent)}
+  .status.draft{color:var(--accent-ink);border-color:color-mix(in srgb,var(--accent) 55%,transparent);background:color-mix(in srgb,var(--accent) 10%,transparent)}
+
+  .wege{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:22px 0 8px}
+  @media (max-width:820px){.wege{grid-template-columns:1fr}}
+  .weg{border:1px solid var(--line);border-radius:14px;background:var(--panel);padding:18px 18px 16px}
+  .weg.pick{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
+  .weg .kicker{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent-ink);margin:0 0 8px}
+  .weg h3{margin:0 0 8px;font-size:18px}
+  .weg p{font-size:14px;color:var(--ink-soft);margin:0 0 12px}
+  .weg .foot{font-family:var(--mono);font-size:12px;color:var(--ink-soft);border-top:1px solid var(--line);padding-top:10px;margin-top:auto}
+  .weg .foot b{color:var(--ink)}
+
+  .facts{list-style:none;padding:0;margin:0;display:grid;gap:0}
+  .facts li{display:grid;grid-template-columns:190px 1fr;gap:16px;padding:12px 0;border-top:1px solid var(--line);margin:0}
+  @media (max-width:640px){.facts li{grid-template-columns:1fr;gap:4px}}
+  .facts li:last-child{border-bottom:1px solid var(--line)}
+  .facts .k{font-family:var(--mono);font-size:13px;color:var(--accent-ink)}
+  .facts .v{color:var(--ink-soft)}
+  .facts .v b{color:var(--ink);font-weight:650}
+
+  figure.code{margin:0 0 14px;border-radius:12px;overflow:hidden;border:1px solid var(--line)}
+  figure.code figcaption{display:flex;justify-content:space-between;align-items:center;gap:12px;background:var(--panel);padding:9px 14px;border-bottom:1px solid var(--line);font-family:var(--mono);font-size:12px;color:var(--ink-soft)}
+  .copy{font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;background:transparent;border:1px solid var(--line-strong);color:var(--ink-soft);padding:4px 10px;border-radius:6px;cursor:pointer}
+  .copy:hover{border-color:var(--accent);color:var(--accent-ink)}
+  pre{margin:0;background:var(--code-bg);color:var(--code-ink);padding:16px;overflow-x:auto;font-family:var(--mono);font-size:12.5px;line-height:1.65}
+  pre .t{color:#7fb3ff}pre .a{color:#e0a94e}pre .s{color:#9ece9a}pre .c{color:#6b7686;font-style:italic}pre .ph{color:#e0a94e;background:rgba(224,169,78,.12);border-radius:3px;padding:0 2px}
+
+  .tbl-wrap{overflow-x:auto}
+  table{width:100%;border-collapse:collapse;font-size:14px;min-width:560px}
+  th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+  th{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:var(--ink-soft);font-weight:600}
+  td.ph{font-family:var(--mono);color:var(--accent-ink);white-space:nowrap}
+  tr.hl td{background:color-mix(in srgb,var(--accent) 10%,transparent)}
+  td b{color:var(--ink)}
+  td .ja{color:var(--ok);font-weight:650}
+  td .nein{color:var(--reserve);font-weight:650}
+
+  .note{border-left:3px solid var(--accent);background:color-mix(in srgb,var(--accent) 8%,transparent);padding:12px 16px;border-radius:0 8px 8px 0;font-size:14px;color:var(--ink-soft);margin:14px 0;max-width:66ch}
+  .note.warn{border-left-color:var(--reserve);background:color-mix(in srgb,var(--reserve) 9%,transparent)}
+  .note.ok{border-left-color:var(--ok);background:color-mix(in srgb,var(--ok) 9%,transparent)}
+  .note b{color:var(--ink)}
+
+  footer{margin-top:60px;padding-top:20px;border-top:1px solid var(--line);font-size:13px;color:var(--ink-soft);font-family:var(--mono);letter-spacing:.03em}
+  footer a{color:var(--accent-ink)}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header class="top">
+    <p class="eyebrow">lixe · App-Einbindung · Partner-Dokumentation</p>
+    <h1>lixe in eurer bestehenden App</h1>
+    <p class="lede">Ihr müsst eure App nicht ersetzen. lixe kommt als <b>Schicht dazu</b> — vom Web-Rahmen in einer WebView bis zum vollen Player. Diese Seite zeigt die drei Wege, was jeder kostet, und was ihr dabei behaltet: euren Player, eure Messung, eure Auslieferung.</p>
+    <div class="platforms">
+      <span class="pill">Für <b>iOS</b> · <b>Android</b></span>
+      <span class="pill">Kleinster Weg: <b>1–3 Tage</b> bei euch</span>
+      <span class="pill">Einblendungen sind <b>HTML</b> — überall gleich</span>
+    </div>
+  </header>
+
+  <nav class="toc">
+    <a href="#wege"><span class="n">01</span> Drei Wege</a>
+    <a href="#webrahmen"><span class="n">02</span> Web-Rahmen</a>
+    <a href="#overlay-sdk"><span class="n">03</span> Einblendungs-SDK</a>
+    <a href="#voll-sdk"><span class="n">04</span> Voll-SDK</a>
+    <a href="#anmeldung"><span class="n">05</span> Anmeldung</a>
+    <a href="#datenschutz"><span class="n">06</span> Datenschutz &amp; Freigabe</a>
+    <a href="#regeln"><span class="n">07</span> Store-Regeln &amp; Barrierefreiheit</a>
+    <a href="#aufwand"><span class="n">08</span> Aufwand &amp; Fahrplan</a>
+  </nav>
+
+  <!-- 01 -->
+  <section id="wege">
+    <h2><span class="num">01</span>Drei Wege</h2>
+    <p>Sie unterscheiden sich nur in einer Frage: <b>wie viel von lixe soll in eurer App laufen?</b> Von „ein Rahmen, in dem alles von uns kommt" bis „nur die Interaktionsschicht, alles andere bleibt bei euch".</p>
+
+    <div class="wege">
+      <div class="weg">
+        <p class="kicker">Weg 1</p>
+        <h3>Web-Rahmen</h3>
+        <p>Der bestehende lixe-Player läuft in einer WebView in eurer App. Kein Paket, keine neue Abhängigkeit — eine Adresse.</p>
+        <p class="foot"><b>Bei euch:</b> 1–3 Tage<br><span class="status live">verfügbar</span></p>
+      </div>
+      <div class="weg pick">
+        <p class="kicker">Weg 2 · empfohlen</p>
+        <h3>Einblendungs-SDK</h3>
+        <p><b>Euer Player bleibt.</b> lixe liefert nur die Schicht darüber: Live-Einblendungen, Umfragen, Quiz, Live-Shopping.</p>
+        <p class="foot"><b>Bei euch:</b> 1–3 Tage<br><span class="status draft">Entwurf · auf Anfrage</span></p>
+      </div>
+      <div class="weg">
+        <p class="kicker">Weg 3</p>
+        <h3>Voll-SDK</h3>
+        <p>lixe-Player als native Ansicht in eurer App: Hochkant-Feed, linearer Kanal, Einblendungen, Freischaltung.</p>
+        <p class="foot"><b>Bei euch:</b> 2–5 Tage + Abstimmung<br><span class="status draft">Entwurf · auf Anfrage</span></p>
+      </div>
+    </div>
+
+    <div class="note"><b>Zum Status, offen gesagt:</b> Weg 1 läuft heute — es ist dieselbe Einbettung, die auch auf Partner-Websites läuft. Weg 2 und Weg 3 beschreiben die <b>Schnittstelle, auf die wir uns mit euch festlegen</b>; die Pakete schnüren wir für die erste Einbindung. Die Technik dahinter ist gebaut und in den lixe-Apps für iOS und Android im Einsatz — was fehlt, ist die Verpackung als Bibliothek, nicht die Funktion.</div>
+
+    <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>&nbsp;</th><th>Weg 1 · Web-Rahmen</th><th>Weg 2 · Einblendungs-SDK</th><th>Weg 3 · Voll-SDK</th></tr></thead>
+      <tbody>
+        <tr><td><b>Ihr baut ein</b></td><td>eine WebView</td><td>eine Ansicht über eurem Video</td><td>eine Ansicht + Anmeldung</td></tr>
+        <tr class="hl"><td><b>Euer Player</b></td><td>bleibt ungenutzt</td><td><span class="ja">bleibt eurer</span></td><td>wird ersetzt</td></tr>
+        <tr><td><b>Eure Messung (AGF o.&nbsp;ä.)</b></td><td>läuft getrennt</td><td><span class="ja">unberührt</span></td><td>Abstimmung nötig</td></tr>
+        <tr><td><b>DRM / Geoblocking / Rechte</b></td><td>lixe-Inhalte</td><td><span class="ja">bleibt bei euch</span></td><td>lixe-Inhalte</td></tr>
+        <tr class="hl"><td><b>Neue Abhängigkeiten</b></td><td><span class="ja">keine</span></td><td>eine Bibliothek, ohne Player</td><td>Bibliothek inkl. Player</td></tr>
+        <tr><td><b>Hintergrund-Ton / PiP / Offline</b></td><td><span class="nein">nein</span></td><td>eures, unverändert</td><td>ja</td></tr>
+        <tr><td><b>Prüffläche im Security-Review</b></td><td>eine Domain</td><td><span class="ja">klein</span></td><td>groß</td></tr>
+        <tr><td><b>Aufwand bei euch</b></td><td>1–3 Tage</td><td>1–3 Tage</td><td>2–5 Tage</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </section>
+
+  <!-- 02 -->
+  <section id="webrahmen">
+    <h2><span class="num">02</span>Weg 1 — Web-Rahmen <span class="status live">verfügbar</span></h2>
+    <p>Der schnellste Weg: Ihr zeigt den eingebetteten lixe-Player in einer WebView. Es ist exakt die Einbettung aus <a href="../">Variante A/B</a> — dieselbe Adresse, dieselben Schlüssel, dieselbe Domain-Freigabe. Für eine Machbarkeitsstudie oder einen Pilot ist das an einem Nachmittag erledigt.</p>
+
+    <h3>iOS · WKWebView</h3>
+    <figure class="code">
+      <figcaption>Swift<button class="copy" data-copy="ios-web">Kopieren</button></figcaption>
+<pre id="ios-web"><span class="t">let</span> cfg = <span class="t">WKWebViewConfiguration</span>()
+cfg.allowsInlineMediaPlayback = <span class="t">true</span>              <span class="c">// Video im Rahmen, nicht Vollbild</span>
+cfg.mediaTypesRequiringUserActionForPlayback = []   <span class="c">// Autoplay wie im Browser</span>
+
+<span class="t">let</span> web = <span class="t">WKWebView</span>(frame: .zero, configuration: cfg)
+web.scrollView.isScrollEnabled = <span class="t">false</span>              <span class="c">// der Player wischt selbst</span>
+web.load(<span class="t">URLRequest</span>(url: <span class="t">URL</span>(string:
+  <span class="s">"https://app.lixe.de/einbetten/app?k=</span><span class="ph">emb_…</span><span class="s">#t=</span><span class="ph">TOKEN</span><span class="s">"</span>)!))
+
+<span class="c">// Ton auch bei gestelltem Stummschalter — wie bei Video üblich</span>
+<span class="t">try?</span> <span class="t">AVAudioSession</span>.sharedInstance().setCategory(.playback)</pre>
+    </figure>
+
+    <h3>Android · WebView</h3>
+    <figure class="code">
+      <figcaption>Kotlin<button class="copy" data-copy="and-web">Kopieren</button></figcaption>
+<pre id="and-web"><span class="t">val</span> web = <span class="t">WebView</span>(context)
+web.settings.javaScriptEnabled = <span class="t">true</span>
+web.settings.domStorageEnabled = <span class="t">true</span>                  <span class="c">// merkt die Anmeldung</span>
+web.settings.mediaPlaybackRequiresUserGesture = <span class="t">false</span>   <span class="c">// Autoplay wie im Browser</span>
+web.webChromeClient = <span class="t">WebChromeClient</span>()                 <span class="c">// Vollbild + neue Fenster</span>
+web.loadUrl(<span class="s">"https://app.lixe.de/einbetten/app?k=</span><span class="ph">emb_…</span><span class="s">#t=</span><span class="ph">TOKEN</span><span class="s">"</span>)</pre>
+    </figure>
+
+    <p><code class="inl">#t=TOKEN</code> ist optional — ohne Token meldet sich die Person über ein kurzes lixe-Fenster an, mit Token ist sie schon angemeldet (siehe <a href="#anmeldung">§05</a>). Das Token entsteht <b>auf eurem Server</b>, nie in der App.</p>
+
+    <h3>Was dabei nicht geht</h3>
+    <ul>
+      <li><b>Kein Hintergrund-Ton, kein Bild-in-Bild, kein Offline.</b> Eine WebView schläft mit der App ein.</li>
+      <li><b>Zwei getrennte Messungen.</b> Eure Reichweitenmessung sieht „WebView geöffnet", nicht die Watchtime. Die liegt in der lixe-Auswertung.</li>
+      <li><b>Bezahlschritte fremder Anbieter</b> (PayPal &amp; Co.) öffnen ein eigenes Fenster — das ist deren Vorschrift, nicht unsere Entscheidung.</li>
+      <li><b>Kein Zugriff auf euer Design-System.</b> Der Rahmen sieht aus wie lixe, nicht wie eure App.</li>
+    </ul>
+    <div class="note">Genau diese vier Punkte sind der Grund, warum es Weg 2 und 3 gibt. Für einen Pilot stören sie selten — für eine dauerhafte Einbindung in eine Mediathek schon.</div>
+  </section>
+
+  <!-- 03 -->
+  <section id="overlay-sdk">
+    <h2><span class="num">03</span>Weg 2 — Einblendungs-SDK <span class="status draft">Entwurf</span></h2>
+    <p>Der Weg, den wir Mediathek-Herstellern empfehlen. Ihr habt bereits einen Player, DRM, Geoblocking, eine geprüfte Messung und einen Consent-Layer. Was ihr nicht habt, ist die <b>redaktionell steuerbare Schicht im Bild</b>: Bauchbinden, Umfragen, Mitspiel-Quiz, Live-Shopping, Aktionscodes — live umschaltbar, ohne App-Update.</p>
+    <p>Diese Schicht ist bei uns bereits eigenständig gebaut: eine durchsichtige WebView über dem Bild, die alle zwei Sekunden fragt, was gerade zu sehen sein soll, und HTML aus dem lixe-CMS gegen eine feste Bühne rendert — auf Web, iOS und Android identisch. Sie kennt euren Player nicht und braucht ihn nicht.</p>
+
+    <ul class="facts">
+      <li><span class="k">Was ihr liefert</span><span class="v">Eine Fläche über eurem Video und die <b>Kennung dessen, was gerade läuft</b> (Stream-, Kanal- oder Video-ID). Mehr nicht.</span></li>
+      <li><span class="k">Was lixe liefert</span><span class="v">Die Ebene, das Abrufen im Zwei-Sekunden-Takt samt Rückfall bei Störung, das Rendern, die Tipp-Behandlung, den Kaufweg aus einer Einblendung heraus.</span></li>
+      <li><span class="k">Was <b>nicht</b> mitkommt</span><span class="v">Kein Player, kein zweiter HTTP-Unterbau, <b>kein Firebase</b>, kein Werbe- oder Analyse-SDK, keine Push-Registrierung. Das bleibt alles eures.</span></li>
+      <li><span class="k">Gestaltung</span><span class="v">Die Einblendungen sind HTML aus dem CMS — <b>in eurem Markenlook</b>, von eurer Redaktion oder unserer gepflegt. Siehe <a href="../einblendungen/">Einblendungen-Doku</a>.</span></li>
+      <li><span class="k">Android-Besonderheit</span><span class="v">Die Bibliothek zeigt nach außen eine gewöhnliche <b>View</b>, kein Compose. So erbt ihr weder unsere Compose- noch unsere media3-Versionen.</span></li>
+    </ul>
+
+    <h3>So sähe der Einbau aus</h3>
+    <figure class="code">
+      <figcaption>iOS · Swift <span>Entwurf</span></figcaption>
+<pre><span class="t">import</span> LixeOverlay
+
+<span class="t">let</span> ebene = <span class="t">LixeOverlayView</span>(
+    schluessel: <span class="s">"</span><span class="ph">emb_…</span><span class="s">"</span>,
+    kontext:    .stream(<span class="ph">42</span>),        <span class="c">// .stream(id) · .kanal(id) · .video("ABCDEF")</span>
+    zuschauer:  .token(ssoToken)     <span class="c">// oder .gast</span>
+)
+videoContainer.addSubview(ebene)     <span class="c">// deckungsgleich über EUREM Player</span>
+ebene.frame = videoContainer.bounds</pre>
+    </figure>
+    <figure class="code">
+      <figcaption>Android · Kotlin <span>Entwurf</span></figcaption>
+<pre><span class="t">val</span> ebene = <span class="t">LixeOverlayView</span>(context).apply {
+    schluessel = <span class="s">"</span><span class="ph">emb_…</span><span class="s">"</span>
+    kontext    = <span class="t">Kontext</span>.Stream(<span class="ph">42</span>)
+    zuschauer  = <span class="t">Zuschauer</span>.Token(ssoToken)   <span class="c">// oder Zuschauer.Gast</span>
+}
+videoContainer.addView(ebene)        <span class="c">// deckungsgleich über EUREM Player</span></pre>
+    </figure>
+
+    <h3>Ganz ohne Paket: direkt gegen die Schnittstelle</h3>
+    <p>Wollt ihr gar keine fremde Bibliothek im Projekt — ein häufiger Wunsch bei Häusern mit strenger Freigabe —, baut ihr die Ebene in zwei Tagen selbst. Es ist ein Abruf und eine WebView:</p>
+    <figure class="code">
+      <figcaption>GET https://app.lixe.de/api/overlay/current?stream=42</figcaption>
+<pre>{ <span class="a">"overlays"</span>: [
+    { <span class="a">"id"</span>: <span class="ph">481</span>,
+      <span class="a">"html"</span>: <span class="s">"&lt;div class=\"stage\"&gt;…&lt;/div&gt;"</span>,
+      <span class="a">"interactive"</span>: <span class="t">true</span> }
+] }</pre>
+    </figure>
+    <ul>
+      <li><b>Parameter:</b> <code class="inl">stream</code>, <code class="inl">channel</code> oder <code class="inl">showing</code> — je nachdem, was gerade läuft.</li>
+      <li><b>Takt:</b> alle 2&nbsp;Sekunden. Bei Fehlern <b>verdoppeln bis maximal 60&nbsp;Sekunden</b> — ein Client, der bei Störung weiterhämmert, macht aus einem kaputten Bildschirm einen Serverausfall.</li>
+      <li><b>Rendern:</b> durchsichtige WebView, unten am Bildrand verankert, Bühne 1080 breit. Mehrere Einblendungen stapeln sich, die spätere liegt oben.</li>
+      <li><b>Tippen:</b> Eingaben nur annehmen, wenn <code class="inl">interactive</code> gesetzt ist — sonst bleiben Wischen und Ton eures Players erreichbar.</li>
+    </ul>
+    <div class="note ok"><b>Für eure TV-Plattformen:</b> Weil eine Einblendung schlicht HTML ist, ist derselbe Abruf auch der Weg auf HbbTV, Smart-TV, tvOS und Android TV — dort rendert ihr ihn in eurer eigenen Oberfläche. Die Bedienung per Fernbedienung stimmen wir gemeinsam ab; die Datenquelle bleibt dieselbe.</div>
+  </section>
+
+  <!-- 04 -->
+  <section id="voll-sdk">
+    <h2><span class="num">04</span>Weg 3 — Voll-SDK <span class="status draft">Entwurf</span></h2>
+    <p>Der lixe-Player als native Ansicht in eurer App — Hochkant-Feed zum Wischen, linearer Kanal mit Sendeplan, Livestreams, Einblendungen, Weiterschauen, Freischaltung. Technisch nichts Exotisches: <b>AVPlayer</b> auf iOS, <b>ExoPlayer/media3</b> auf Android, HLS.</p>
+    <p>Das ist der Weg, wenn lixe in eurer App ein eigener Bereich sein soll — ein zusätzlicher Tab, ein Kanal in eurer Mediathek — und nicht nur eine Schicht über bestehenden Inhalten.</p>
+
+    <h3>Was ihr dafür abstimmen müsst</h3>
+    <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Punkt</th><th>Worum es geht</th></tr></thead>
+      <tbody>
+        <tr><td class="ph">Player-Version</td><td>Bringt ihr selbst ExoPlayer/media3 mit, müssen sich die Versionen vertragen. Alternative: <b>euer Player, unsere Schicht</b> — also Weg 2.</td></tr>
+        <tr><td class="ph">Rücksprung</td><td>Nach einem Bezahlvorgang im Systembrowser muss die App zurückgerufen werden. In der lixe-App ist das <code class="inl">lixe://kauf</code>; in eurer App gehört das Schema euch, also wird es <b>konfigurierbar</b>.</td></tr>
+        <tr class="hl"><td class="ph">Push</td><td>Bleibt bei euch. Das SDK registriert <b>keine</b> Push-Kennung und bringt kein Firebase mit.</td></tr>
+        <tr><td class="ph">Design</td><td>Farben kommen sonst aus dem lixe-CMS. In eurer App gebt ihr sie vor — Akzent, Hintergrund, Flächen, Schrift.</td></tr>
+        <tr><td class="ph">Messung</td><td>Watchtime läuft sekundengenau in anonymen Kohorten an lixe. Wenn eure Messung dieselben Ereignisse braucht, geben wir sie euch als Rückruf — ihr schickt sie in euer eigenes System.</td></tr>
+        <tr><td class="ph">Freischaltung</td><td>Siehe <a href="#regeln">§07</a> — in eurer App verkauft <b>ihr</b>, oder es wird gar nicht verkauft.</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <div class="note warn"><b>Ehrlich zur Größe:</b> Weg 3 ist der Weg mit der größten Prüffläche — Player, Netzwerk, Bezahlung, Store-Regeln. Wenn ihr zwischen „schnell live" und „vollständig" wählen müsst: fangt mit Weg 2 an. Weg 3 kann jederzeit folgen, die Schlüssel und die Anmeldung sind dieselben.</div>
+  </section>
+
+  <!-- 05 -->
+  <section id="anmeldung">
+    <h2><span class="num">05</span>Anmeldung — drei Stufen</h2>
+    <p>Wie viel lixe über eure Zuschauer:innen wissen muss, entscheidet ihr. Alle drei Stufen funktionieren in allen drei Wegen.</p>
+    <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Stufe</th><th>Was lixe sieht</th><th>Was ihr dafür tut</th></tr></thead>
+      <tbody>
+        <tr><td><b>Gast</b></td><td>Nichts Personenbezogenes. Eine Kennung, die nur auf dem Gerät liegt.</td><td>Nichts. Läuft sofort.</td></tr>
+        <tr class="hl"><td><b>Pseudonym signiert</b></td><td>Eine gleichbleibende, <b>nicht rückrechenbare</b> Kennung — genug, damit Quiz-Punkte einer Person zugeordnet bleiben.</td><td>Ein kleiner Server-Endpunkt (HMAC).</td></tr>
+        <tr><td><b>Volles SSO</b></td><td>Wer bei euch angemeldet ist, ist es auch bei lixe — ohne zweite Anmeldung.</td><td>Derselbe Endpunkt, mit E-Mail und Name im Payload.</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <p>Der Server-Teil ist derselbe, den es im Partner-Kit schon fertig gibt — in <a href="../variante-b-sso/php/">PHP</a> und <a href="../variante-b-sso/node/">Node</a>:</p>
+    <figure class="code">
+      <figcaption>Auf eurem Server — nie in der App</figcaption>
+<pre><span class="c">// 1) Person, die bei euch angemeldet ist, unterschreiben</span>
+payload = base64url({ email, name, exp })
+sig     = HMAC_SHA256(<span class="ph">geheimer_schluessel</span>, <span class="s">"sso:"</span> + payload)
+
+<span class="c">// 2) Token holen</span>
+POST https://app.lixe.de/api/partner/session
+     { k: <span class="ph">"emb_…"</span>, payload, sig }   →   { token: <span class="s">"…"</span> }
+
+<span class="c">// 3) Token an die App geben — sie steckt ihn in die WebView-Adresse (#t=)
+//    oder in die SDK-Konfiguration. Er ist kurzlebig.</span></pre>
+    </figure>
+    <div class="note warn"><b>Der geheime Schlüssel gehört niemals in eine App.</b> Eine App lässt sich auspacken; ein Schlüssel darin ist ein öffentlicher Schlüssel. Nur der <b>Einbett-Schlüssel</b> (<code class="inl">emb_…</code>) darf mitgeliefert werden — er zeigt bloß, zu wem der Rahmen gehört.</div>
+  </section>
+
+  <!-- 06 -->
+  <section id="datenschutz">
+    <h2><span class="num">06</span>Datenschutz &amp; Freigabe</h2>
+    <p>Erfahrungsgemäß ist nicht der Einbau der lange Teil, sondern die Freigabe bei euch. Damit die Prüfung schnell geht, hier vorab, was ein Review üblicherweise wissen will:</p>
+    <ul class="facts">
+      <li><span class="k">Server</span><span class="v">In <b>Deutschland</b>.</span></li>
+      <li><span class="k">Angesprochene Adressen</span><span class="v"><code class="inl">app.lixe.de</code> für Schnittstelle und Einblendungs-HTML, dazu die Ausspieladresse der Videos. Eine vollständige Liste bekommt ihr schriftlich.</span></li>
+      <li><span class="k">Messung</span><span class="v">Verweildauer in <b>anonymen Kohorten, ohne Nutzerkennung</b>. Kein Werbe-Tracking, keine Geräte-Werbe-ID, keine Weitergabe an Dritte.</span></li>
+      <li><span class="k">Fremde SDKs</span><span class="v">In der Einblendungs-Schicht (Weg 2): <b>keine</b>. Kein Firebase, kein Analyse-, kein Werbe-SDK.</span></li>
+      <li><span class="k">Einsehbarkeit</span><span class="v">Einblendungen sind HTML aus dem CMS — im Klartext prüfbar. Für die Bibliothek bieten wir <b>Quellcode-Einsicht</b> an.</span></li>
+      <li><span class="k">Über eure Domain</span><span class="v">Auf Anfrage lässt sich der Abruf über euren eigenen Proxy führen, sodass aus der App heraus nur eure Domain angesprochen wird.</span></li>
+      <li><span class="k">Einwilligung</span><span class="v">Ohne Anmeldung liegt nichts Personenbezogenes an. Braucht ihr einen Consent-Schalter davor, bleibt die Schicht so lange still — sie startet erst, wenn ihr sie startet.</span></li>
+    </ul>
+  </section>
+
+  <!-- 07 -->
+  <section id="regeln">
+    <h2><span class="num">07</span>Store-Regeln &amp; Barrierefreiheit</h2>
+
+    <h3>Wer verkauft, trägt das Risiko</h3>
+    <p>Digitale Inhalte, die in einer App freigeschaltet werden, verlangen nach den Store-Regeln die App-Bezahlung des jeweiligen Anbieters. Läuft das in <b>eurer</b> App, hängt es an <b>eurem</b> Entwicklerkonto — nicht an unserem. Deshalb ist die Regel eindeutig:</p>
+    <ul>
+      <li>Die Einbindung kommt <b>ohne Bezahlschranke</b>. Wer welche Inhalte sehen darf, sagt ihr uns beim Anmelden (§05) — die Freischaltung passiert bei euch, nicht im Player.</li>
+      <li><b>Ware und Dienstleistung</b> (Teleshopping, Tickets, Merch) dürfen den Kaufweg aus einer Einblendung benutzen — das ist von den Store-Regeln gedeckt.</li>
+      <li>Wollt ihr digitale Inhalte in der App verkaufen, geht das über <b>eure</b> App-Bezahlung; wir buchen die Freischaltung dann auf euer Signal hin.</li>
+    </ul>
+    <div class="note">In unserer eigenen App ist die Code-Einlösung aus genau diesem Grund abgeschaltet. Wir kennen die Regel nicht aus der Theorie.</div>
+
+    <h3>Barrierefreiheit — ein offener Punkt</h3>
+    <p>Weil eine Einblendung HTML ist, gelten dafür dieselben Regeln wie für eine Webseite: Kontrast, Schriftgröße, Alternativtexte, abschaltbare Bewegung — das entscheidet, wer sie gestaltet, und lässt sich sauber lösen.</p>
+    <div class="note warn"><b>Stand heute nicht gelöst:</b> Die Einblendungs-Ebene ist für Screenreader (VoiceOver, TalkBack) noch nicht ausgezeichnet. Für eine Mediathek, die nach BFSG/BITV geprüft wird, ist das ein echter Arbeitspunkt — kein großer, aber einer, den wir vor einer Einbindung gemeinsam einplanen sollten, statt ihn zu übergehen.</div>
+  </section>
+
+  <!-- 08 -->
+  <section id="aufwand">
+    <h2><span class="num">08</span>Aufwand &amp; Fahrplan</h2>
+    <p>Erfahrungswerte, kein Angebot — aber ehrlich gerechnet.</p>
+    <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>&nbsp;</th><th>Bei euch</th><th>Bei lixe (Vorbereitung)</th></tr></thead>
+      <tbody>
+        <tr><td><b>Weg 1 · Web-Rahmen</b></td><td>1–3 Tage</td><td>läuft — nur Schlüssel und Domain</td></tr>
+        <tr class="hl"><td><b>Weg 2 · Einblendungs-SDK</b></td><td>1–3 Tage</td><td>3–5 Wochen bis zum fertigen Paket</td></tr>
+        <tr><td><b>Weg 2 · ohne Paket, direkt gegen die Schnittstelle</b></td><td>2–4 Tage</td><td>läuft — Schnittstelle steht</td></tr>
+        <tr><td><b>Weg 3 · Voll-SDK</b></td><td>2–5 Tage</td><td>6–10 Wochen für iOS und Android</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <div class="note"><b>Der längste Posten steht in keiner Zeile:</b> euer Release-Zug. Auch ein Einbau von zwei Tagen erscheint erst mit eurem nächsten Store-Update — üblicherweise 6 bis 10 Wochen. Wer das früh einplant, verliert kein Quartal.</div>
+
+    <h3>Wie wir anfangen würden</h3>
+    <ul>
+      <li><b>1 · Halber Tag gemeinsam.</b> Ihr zeigt uns, wo im Player die Schicht sitzen soll und was euer Review verlangt. Wir sagen, was davon heute geht.</li>
+      <li><b>2 · Pilot mit Weg 1.</b> Ein Rahmen in eurer Testversion, echte Einblendungen aus dem CMS, echte Sendung. Keine Bibliothek, kein Freigabeverfahren.</li>
+      <li><b>3 · Weg 2 verpacken.</b> Parallel zum Pilot, mit euren Anforderungen als Vorgabe — nicht danach.</li>
+      <li><b>4 · Eine echte Sendung.</b> Live, mit eurer Redaktion am CMS. Danach entscheidet ihr über Weg 3.</li>
+    </ul>
+  </section>
+
+  <footer>lixe · App-Einbindung — Partner-Dokumentation · <a href="../">Partner-Kit</a> · <a href="../einblendungen/">Einblendungen</a> · Fragen: hello@lixe.de</footer>
+</div>
+
+<script>
+  document.querySelectorAll('.copy').forEach(function(b){b.addEventListener('click',function(){
+    var pre=document.getElementById(b.dataset.copy);if(!pre)return;
+    navigator.clipboard&&navigator.clipboard.writeText(pre.innerText).then(function(){
+      var o=b.textContent;b.textContent='Kopiert ✓';setTimeout(function(){b.textContent=o},1400);
+    });
+  });});
+</script>
+</body>
+</html>

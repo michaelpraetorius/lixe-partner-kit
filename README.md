@@ -62,6 +62,34 @@ pseudonymen, signierten Zuschauer-Kennung.
 
 ---
 
+## lixe in einer bestehenden App (iOS/Android)
+
+Du hast schon eine App und willst sie nicht ersetzen? Musst du nicht. lixe kommt
+als **Schicht dazu** – vom Web-Rahmen in einer WebView bis zum vollen Player. Die
+vollständige Anleitung mit Codebeispielen, Aufwand und den Punkten, die eine
+Datenschutz-Freigabe üblicherweise abfragt, liegt als eigene Seite bei:
+
+**[→ App-Einbindung](app-einbindung/)**  ·  auf GitHub Pages unter
+`https://<dein-github-name>.github.io/lixe-partner-kit/app-einbindung/`
+
+| | **Weg 1 – Web-Rahmen** | **Weg 2 – Einblendungs-SDK** | **Weg 3 – Voll-SDK** |
+|---|---|---|---|
+| Was ihr einbaut | eine WebView | eine Ansicht über eurem Video | Player als native Ansicht |
+| Euer Player | bleibt ungenutzt | **bleibt eurer** | wird ersetzt |
+| Neue Abhängigkeiten | keine | eine Bibliothek, ohne Player | Bibliothek inkl. Player |
+| Aufwand bei euch | 1–3 Tage | 1–3 Tage | 2–5 Tage |
+| Status | **verfügbar** | Entwurf, auf Anfrage | Entwurf, auf Anfrage |
+
+**Weg 2 ist der empfohlene Weg für Mediathek-Hersteller:** Player, DRM,
+Geoblocking und die geprüfte Reichweitenmessung bleiben bei euch – dazu kommt nur
+die redaktionell steuerbare Schicht im Bild (Bauchbinden, Umfragen, Mitspiel-Quiz,
+Live-Shopping). Ohne Player im Paket, ohne Firebase, ohne zweiten HTTP-Unterbau.
+Wer gar keine fremde Bibliothek im Projekt will, baut die Ebene in zwei Tagen
+selbst gegen `GET /api/overlay/current` – derselbe Abruf trägt auch HbbTV,
+Smart-TV, tvOS und Android TV, weil eine Einblendung schlicht HTML ist.
+
+---
+
 ## Zwei Schlüssel – nicht verwechseln
 
 lixe arbeitet mit zwei Schlüsseln. Der Unterschied ist wichtig:
