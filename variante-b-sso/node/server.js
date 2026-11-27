@@ -59,12 +59,13 @@ function lixePlayerUrl(person) {
       timeout: 10000,
     }, (res) => {
       let data = "";
+      res.on("error", reject);
       res.on("data", (c) => (data += c));
       res.on("end", () => {
         let json = {};
         try { json = JSON.parse(data); } catch (e) {}
         if (res.statusCode !== 200 || !json.token) {
-          return reject(new Error("lixe-Anmeldung fehlgeschlagen (HTTP " + res.statusCode + "): " + data));
+          return reject(new Error("lixe-Anmeldung fehlgeschlagen (HTTP " + res.statusCode + ")"));
         }
         resolve(APP_URL + "/einbetten/app?k=" + encodeURIComponent(EMBED_KEY) + "#t=" + encodeURIComponent(json.token));
       });
@@ -96,7 +97,7 @@ const server = http.createServer(async (req, res) => {
          </div>
        </div>`;
 
-  res.writeHead(200, { "Content-Type": "text/html; charset=utf-8" });
+  res.writeHead(200, { "Content-Type": "text/html; charset=utf-8", "Cache-Control": "no-store" });
   res.end(`<!DOCTYPE html><html lang="de"><head><meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Beispiel-Partnerseite · lixe nahtlos (Node)</title>

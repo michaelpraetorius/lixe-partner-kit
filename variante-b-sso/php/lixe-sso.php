@@ -74,7 +74,7 @@ function lixe_player_url(array $person): string
 
     $daten = json_decode((string) $antwort, true);
     if ($status !== 200 || empty($daten['token'])) {
-        throw new RuntimeException('lixe-Anmeldung fehlgeschlagen (HTTP ' . $status . '): ' . $antwort);
+        throw new RuntimeException('lixe-Anmeldung fehlgeschlagen (HTTP ' . $status . ')');
     }
 
     // Token im #-Fragment: bleibt im Browser, geht nie an einen Server zurück.

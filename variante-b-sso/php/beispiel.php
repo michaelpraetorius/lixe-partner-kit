@@ -7,6 +7,7 @@
  * lixe-Token und bettet den Player damit ein – die Person sieht KEIN lixe-Login.
  */
 
+header('Cache-Control: no-store');
 require __DIR__ . '/lixe-sso.php';
 
 // 👉 In echt: die bei DIR angemeldete Person (aus deiner Session/DB).
